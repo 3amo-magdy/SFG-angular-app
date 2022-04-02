@@ -1,6 +1,7 @@
 .canvas{
     background-color: #ffffff;
 }
+
 .line{
     z-index: -2;
     stroke:  rgb(89, 89, 89);
@@ -38,14 +39,11 @@
     cursor: crosshair;
     user-select: none;
 }
+.qtext:hover{
+    fill: red;
+}
 .m{
-    /* don't use fill here*/
-    /* fill colors are determined in the M class*/
-
     stroke-width: 1px;
     stroke: rgb(0, 0, 0);
     cursor: crosshair;
-    /* fill: rgb(165, 34, 34);
-    fill: rgb(184, 184, 184); */
-
 }

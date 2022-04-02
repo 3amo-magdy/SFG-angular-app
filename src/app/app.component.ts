@@ -1,4 +1,5 @@
 import { Component, ElementRef, ViewChild } from "@angular/core";
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { IViewable } from "./SFGComponents/IViewable";
 import { link } from "./SFGComponents/link";
 import { mode } from "./SFGComponents/mode";
@@ -71,6 +72,9 @@ export class AppComponent {
       }
 
     }
+  }
+  selectingAlink():boolean{
+    return this.selected instanceof link;
   }
 
   select(v:IViewable){
@@ -201,8 +205,12 @@ export class AppComponent {
     var res:string;
     let x1 = this.evaluate_x(l.from);
     let x2 = this.evaluate_x(l.to);
+    //self loop
+    if(x1==x2){
+      return `M ${x1-this.NODEWIDTH/3} ${this.axis_height} T ${x1-this.NODEWIDTH/3} ${this.axis_height-(this.NODEWIDTH)} ${x1+this.NODEWIDTH/3} ${this.axis_height-(this.NODEWIDTH)} ${x2+this.NODEWIDTH/3} ${this.axis_height}`;
+      
+    }
     res = `M ${x1} ${this.axis_height} Q ${(x1+x2)/2} ${this.axis_height-(x2-x1)/2} ${x2} ${this.axis_height}`;
-    console.log(res);
     return res;
   }
   evaluate_x(node: node):number{
@@ -221,6 +229,9 @@ export class AppComponent {
   evaluate_curve_midPoint_y(l:link){
     let x0= this.evaluate_x(l.from);
     let x2 = this.evaluate_x(l.to);
+    if(x0==x2){
+      return this.axis_height - 2/3 *this.NODEWIDTH
+    }
     let y1 = this.axis_height-(x2-x0)/2;
     return 0.5 * this.axis_height + 0.5 * y1 ;
   }
@@ -230,10 +241,18 @@ export class AppComponent {
     let mid_point_y = this.evaluate_curve_midPoint_y(l);
     let x1= this.evaluate_x(l.from);
     let x2 = this.evaluate_x(l.to);
+    if(x1 == x2){
+      return "";
+    }
     let mid_point_x = (x2+x1)/2;
     if(x1>x2){
       ArrowWidth*=-1;
     }
     return `${mid_point_x+1/3*ArrowWidth} ${mid_point_y} ${mid_point_x-ArrowWidth*2/3} ${mid_point_y-this.ArrowHeight*1/3} ${mid_point_x-ArrowWidth*2/3} ${mid_point_y+this.ArrowHeight*1/3}`
   }
+  editGain(e : any){
+    (this.selected as link).gain = e.target.value;
+    e.target.value = "";
+  }
 }
+
