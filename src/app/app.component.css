@@ -1,5 +1,5 @@
 .canvas{
-    background-color: #16232b;
+    background-color: #ffffff;
 }
 .line{
     z-index: -2;
@@ -13,11 +13,17 @@
 
     /* marker-end: url("arrowhead.html"); */
 }
+.line:hover{
+    stroke:  rgb(218, 12, 12);
+}
 .arrow{
     z-index: -1;
     fill: rgb(214, 218, 7);
     cursor: crosshair;
 
+}
+.m:hover{
+    fill:  rgb(218, 12, 12);
 }
 .q{
     stroke-width: 1px;

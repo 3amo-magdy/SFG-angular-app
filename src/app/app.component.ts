@@ -26,6 +26,8 @@ export class AppComponent {
   axis_height:number=innerHeight/2;
   axis_pointer!:number;
   NODEWIDTH=40;
+  ArrowWidth = 16; //pixels
+  ArrowHeight = 10; //pixels
   constructor(){
     this.nodes=[];
     this.links=[];
@@ -216,10 +218,22 @@ export class AppComponent {
   }
     return res;
   }
-  evaluate_curve_midPoint(l:link){
+  evaluate_curve_midPoint_y(l:link){
     let x0= this.evaluate_x(l.from);
     let x2 = this.evaluate_x(l.to);
     let y1 = this.axis_height-(x2-x0)/2;
     return 0.5 * this.axis_height + 0.5 * y1 ;
+  }
+  evaluate_arrow(l:link):string{
+    let res ="";
+    let ArrowWidth = this.ArrowWidth;
+    let mid_point_y = this.evaluate_curve_midPoint_y(l);
+    let x1= this.evaluate_x(l.from);
+    let x2 = this.evaluate_x(l.to);
+    let mid_point_x = (x2+x1)/2;
+    if(x1>x2){
+      ArrowWidth*=-1;
+    }
+    return `${mid_point_x+1/3*ArrowWidth} ${mid_point_y} ${mid_point_x-ArrowWidth*2/3} ${mid_point_y-this.ArrowHeight*1/3} ${mid_point_x-ArrowWidth*2/3} ${mid_point_y+this.ArrowHeight*1/3}`
   }
 }
