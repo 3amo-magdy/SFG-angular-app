@@ -1,0 +1,45 @@
+.canvas{
+    background-color: #16232b;
+}
+.line{
+    z-index: -2;
+    stroke:  rgb(89, 89, 89);
+    stroke-dashoffset: 0.1px;
+    stroke-width: 2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    border: 2px solid black;
+    cursor: crosshair;
+
+    /* marker-end: url("arrowhead.html"); */
+}
+.arrow{
+    z-index: -1;
+    fill: rgb(214, 218, 7);
+    cursor: crosshair;
+
+}
+.q{
+    stroke-width: 1px;
+    stroke: rgb(0, 0, 0);
+    cursor: crosshair;
+
+}
+.qtext{
+    fill:rgba(0, 0, 0, 0.912);
+    font-weight: bold;
+    font-family: 'Segoe UI';
+    cursor: crosshair;
+    user-select: none;
+}
+.m{
+    /* don't use fill here*/
+    /* fill colors are determined in the M class*/
+
+    stroke-width: 1px;
+    stroke: rgb(0, 0, 0);
+    cursor: crosshair;
+    /* fill: rgb(165, 34, 34);
+    fill: rgb(184, 184, 184); */
+
+}

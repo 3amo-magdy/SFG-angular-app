@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>simulation</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+  <body>
+  <div >
+    <button id="Node" class="btn"  (click)="addnode()">+Node</button>
+    <button id="delete" (click)="delete(selected)" class="btn"><i class="fa fa-trash"></i> remove</button>
+
+    <!-- <button id="start" (click)="start()" class="btn"><i class="fa fa-play"></i> Start</button>
+    <button id="pause"  class="btn" (click)="stop()"><i class="fa fa-stop-circle" style="color:red"></i>
+      End</button>
+    <button id="pause" (click)="pause()" class="btn"><i class="fa fa-pause"></i> pause</button> -->
+    <!-- <button id="Back"  (click)='replayO()'  class="btn"><i class="fa fa-reply"></i> reply</button> -->
+
+    <!-- <button id="new" (click)="new()" class="btn"><i class="fa fa-new"></i> new simulation</button> -->
+    <!-- <button id="replay" (click)="replay()" class="btn"><i class='fa fa-reply'></i> Reply </button> -->
+    <!-- <input type="text" id="product" placeholder="Number of products" (keyup.enter)="editGain($event)"> -->
+    <div>
+  <svg #canvas class="canvas" [attr.width]="win.innerWidth-getOffset().left-16" [attr.height]="win.innerHeight-getOffset().top-16" (click)="resetSelection($event)" >
+    <!-- <defs>
+      <marker>[attr.markerWidth]="8" [attr.markerHeight]="4" [attr.refX]="0" [attr.refY]="2" [attr.orient]="auto"
+        id="arrowhead"
+        <polygon> points="0 0,8 2,0 4" </polygon>
+        </marker>
+      <marker> id="arrowhead" markerWidth="8" markerHeight="4" refX="0" refY="2" orient="auto"<polygon> [points]="0 0,8 2,0 4" </polygon></marker>
+    </defs> -->
+    <defs>
+      <marker #lol id="lol" class="arrow"  refX="0" refY="2.5" markerWidth="3"markerHeight="5" orient="auto" style="z-index: 102;">
+        <polygon points="0 0,3 2.5,0 5" >
+        </polygon>
+      </marker>
+    </defs>
+
+    <!-- <line class="line"  *ngFor="let link of links" [attr.x1]="link.x0" [attr.y1]="link.y0" [attr.x2]="link.m0" [attr.y2]="link.m1" (mousedown)="select(link)" > -->
+    <!-- </line> -->
+    <path class="" *ngFor="let link of links" [attr.d]="evaluate_curve(link)" stroke="black" fill="transparent"/>
+    <!-- <line class="line" *ngFor="let link of links" [attr.x1]="link.m0" [attr.y1]="link.m1" [attr.x2]="link.x1" [attr.y2]="link.y1" marker-start="url(#lol)"  (mousedown)="select(link)" > -->
+    <!-- </line> -->
+
+    <!-- <rect class="q" *ngFor="let node of nodes" width="70" height="30"
+      (mousedown)="select(q)" (mouseup)="mouseUp(q)"(mousedown)="keyQ($event,q)" [attr.x]="q.x-35" [attr.y]="q.y-15" [attr.fill]="q.color">
+    </rect> -->
+
+    <text class="qtext" *ngFor="let link of links" [attr.x]="(evaluate_x(link.from)+evaluate_x(link.to))/2-(link.gain.toString().length)" [attr.y]="evaluate_curve_midPoint(link)" fill="black" font-size="12"
+    (mousedown)="select(link)" (mouseup)="mouseUp(link)"
+    >
+    {{link.gain}}
+    </text>
+
+    <circle class ="m" *ngFor="let m of nodes" [attr.fill]="'blue'" [attr.cx]="evaluate_x(m)" [attr.cy]="axis_height" r="20"
+      (mousedown)="select(m)" (mouseup)="mouseUp(m)">
+    </circle>
+  </svg>
+
+
+
+
+    </div>
+  </div>
+
+</body>
+
+</html>
