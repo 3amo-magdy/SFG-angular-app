@@ -33,6 +33,7 @@ export class AppComponent {
 
   axis_height: number = innerHeight / 2;
   axis_pointer!: number;
+  node_name!:number;
   NODEWIDTH = 40;
   ArrowWidth = 12; //pixels
   ArrowHeight = 10; //pixels
@@ -44,6 +45,7 @@ export class AppComponent {
     this.win = window;
     this.NODEWIDTH = 40;
     this.axis_pointer = 0;
+    this.node_name=0;
     this.holding = false;
   }
   ngOnInit() {
@@ -103,12 +105,13 @@ export class AppComponent {
 
   delete(v: IViewable) {
     let arr;
-    console.log("deleting :",this.MODE);
-
     switch (this.MODE) {
       case mode.selectingNode:
         this.deleteAllLinks(v as node);
         let index = this.removefromarr(this.nodes, v);
+        if(index==this.nodes.length){
+          this.node_name--;
+        }
         for (; index < this.nodes.length; index++) {
           this.nodes[index].DecrementX();
         }
@@ -164,7 +167,7 @@ export class AppComponent {
   }
   addnode() {
     let id = this.generator.generate();
-    let newnode = new node(id, this.axis_pointer, this.axis_height);
+    let newnode = new node(id, this.axis_pointer, this.axis_height,"x"+this.node_name++);
     this.nodes.push(newnode);
     this.axis_pointer++;
   }

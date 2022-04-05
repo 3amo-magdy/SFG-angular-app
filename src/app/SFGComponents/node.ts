@@ -78,10 +78,10 @@ export class node extends IViewable{
   public update_x(new_x:number){
     this.x = new_x;
   }
-  constructor(id:string,x:number,y:number){
+  constructor(id:string,x:number,y:number,name:string){
       super(id);
       this._color="#84b3bb";
-      this._name='A'+x;
+      this._name=name;
       this.X = x;
       this.y = y;
       this.In=[];
