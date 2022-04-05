@@ -1,11 +1,9 @@
 import { Component, ElementRef, ViewChild } from "@angular/core";
-import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 import { IViewable } from "./SFGComponents/IViewable";
 import { link } from "./SFGComponents/link";
 import { mode } from "./SFGComponents/mode";
 import { node } from "./SFGComponents/node";
 import { IdGenerator } from "./SFGComponents/IdGenerator";
-import { PriorityQueue } from "./ds/PriorityQueue";
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
