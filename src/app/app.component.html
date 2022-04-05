@@ -30,12 +30,18 @@
 
       <!-- <button id="new" (click)="new()" class="btn"><i class="fa fa-new"></i> new simulation</button> -->
       <!-- <button id="replay" (click)="replay()" class="btn"><i class='fa fa-reply'></i> Reply </button> -->
-      <input
+      <input #gainBox
         type="text"
-        id="product"
         placeholder="gain"
         [disabled]="!selectingAlink"
         (keyup.enter)="editGain($event)"
+      />
+      <input #nameBox
+        type="text"
+        id="product"
+        placeholder="node name"
+        [disabled]="!selectingAnode"
+        (keyup.enter)="editName($event)"
       />
       <div>
         <svg
@@ -43,7 +49,7 @@
           class="canvas"
           [attr.width]="win.innerWidth - getOffset().left - 16"
           [attr.height]="win.innerHeight - getOffset().top - 16"
-          (click)="resetSelection($event)"
+          (mousedown)="resetSelection($event)"
         >
           <!-- <defs>
       <marker>[attr.markerWidth]="8" [attr.markerHeight]="4" [attr.refX]="0" [attr.refY]="2" [attr.orient]="auto"
@@ -80,7 +86,7 @@
           <path
             class="line"
             *ngFor="let link of links"
-            (mousedown)="select(link)"
+            (click)="select(link)"
             (mouseup)="mouseUp(link)"
             [attr.d]="evaluate_curve(link)"
             stroke="black"
@@ -102,13 +108,28 @@
             r="20"
             (mousedown)="select(m)"
             (mouseup)="mouseUp(m)"
+            (mouseout)="mouseOut(m,$event)"
           ></circle>
           <text
-            class="qtext"
+            class="nodeText"
+            *ngFor="let node of nodes"
+            [attr.x]="
+              evaluate_x(node)-(node.name.toString().length*4)
+            "
+            [attr.y]="axis_height+4"
+            fill="black"
+            font-size="12"
+            (mousedown)="select(node)"
+            (click)="select(node)"
+            (mouseup)="mouseUp(node)"            
+          >
+            {{node.name}}
+          </text>
+          <text
+            class="gainText"
             *ngFor="let link of links"
             [attr.x]="
-              (evaluate_x(link.from) + evaluate_x(link.to)) / 2 -
-              link.gain.toString().length
+              (evaluate_x(link.from) + evaluate_x(link.to)) / 2 - (link.gain.toString().length*4)
             "
             [attr.y]="evaluate_curve_midPoint_y(link) - ArrowHeight"
             fill="black"

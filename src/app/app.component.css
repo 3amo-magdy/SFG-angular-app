@@ -32,15 +32,19 @@
     cursor: crosshair;
 
 }
-.qtext{
-    fill:rgba(0, 0, 0, 0.912);
+.nodeText{
+    fill:rgba(255, 255, 255, 0.912);
+    font-weight: bold;
+    font-family: 'Segoe UI';
+    cursor: crosshair;
+    user-select:none;
+}
+.gainText{
+    fill:rgba(156, 0, 0, 0.912);
     font-weight: bold;
     font-family: 'Segoe UI';
     cursor: crosshair;
     user-select: none;
-}
-.qtext:hover{
-    fill: red;
 }
 .m{
     stroke-width: 1px;

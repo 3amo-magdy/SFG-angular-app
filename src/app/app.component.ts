@@ -17,6 +17,8 @@ export class AppComponent {
   MODE!: mode;
   selected!: IViewable;
   lastSelectednode!: node;
+  lastLeftnode!: node;
+
 
   generator: IdGenerator;
   //front:
@@ -24,11 +26,17 @@ export class AppComponent {
   @ViewChild("canvas")
   Ecanvas!: ElementRef;
   canvas!: SVGElement;
+  @ViewChild("gainBox")
+  Egain!:ElementRef;
+  @ViewChild("nameBox")
+  Ename!:ElementRef;
+
   axis_height: number = innerHeight / 2;
   axis_pointer!: number;
   NODEWIDTH = 40;
-  ArrowWidth = 16; //pixels
+  ArrowWidth = 12; //pixels
   ArrowHeight = 10; //pixels
+  holding: boolean;
   constructor() {
     this.nodes = [];
     this.links = [];
@@ -36,6 +44,7 @@ export class AppComponent {
     this.win = window;
     this.NODEWIDTH = 40;
     this.axis_pointer = 0;
+    this.holding = false;
   }
   ngOnInit() {
     this.MODE = mode.linking;
@@ -71,6 +80,9 @@ export class AppComponent {
   selectingAlink(): boolean {
     return this.selected instanceof link;
   }
+  selectingAnode(): boolean {
+    return this.selected instanceof node;
+  }
 
   select(v: IViewable) {
     console.log("selected :");
@@ -79,13 +91,20 @@ export class AppComponent {
     if (v instanceof node) {
       this.MODE = mode.selectingNode;
       this.lastSelectednode = v;
+      this.holding = true;
+      (this.Egain.nativeElement as HTMLInputElement).value="";
+      (this.Ename.nativeElement as HTMLInputElement).value=v.name;
     } else {
       this.MODE = mode.selectingLink;
+      (this.Egain.nativeElement as HTMLInputElement).value=(v as link).gain.toString();
+      (this.Ename.nativeElement as HTMLInputElement).value="";
     }
   }
 
   delete(v: IViewable) {
     let arr;
+    console.log("deleting :",this.MODE);
+
     switch (this.MODE) {
       case mode.selectingNode:
         this.deleteAllLinks(v as node);
@@ -135,10 +154,13 @@ export class AppComponent {
     this.MODE = mode.creatingNode;
   }
   resetSelection(e: MouseEvent) {
-    if (this.MODE == mode.creatingNode) {
-      console.log("just created a node");
-      this.addnode();
+    if(!this.holding){
+      console.log("reset");
+      this.MODE = mode.linking;
     }
+  }
+  keep_holding(){
+    this.holding=true;
   }
   addnode() {
     let id = this.generator.generate();
@@ -164,16 +186,26 @@ export class AppComponent {
     to.In.push(from);
     this.links.push(newLink);
   }
+  mouseOut(v:node,e:MouseEvent){
+    let cx = this.evaluate_x(v)+this.getOffset().left;
+    let cy = this.axis_height+this.getOffset().top;
+    console.log((Math.pow(e.clientX-cx,2)+Math.pow(e.clientY-cy,2)));
+    console.log(this.NODEWIDTH/2);
+    if(this.holding&&((Math.pow(e.clientX-cx,2)+Math.pow(e.clientY-cy,2))>=Math.pow(this.NODEWIDTH/2,2))){
+      this.lastLeftnode = v;
+    }
+  }
   mouseUp(v: IViewable) {
-    console.log("mouse up:");
-    console.log(v);
-    console.log("links:");
-    console.log(this.links);
-
+    this.holding = false;
     if (this.MODE == mode.selectingNode && v instanceof node) {
-      this.Link(this.lastSelectednode, v as node);
-    } else {
-      //do nothing
+      if(v == this.lastSelectednode){
+        if(this.lastSelectednode == this.lastLeftnode){
+          this.Link(this.lastSelectednode, v as node);
+        }
+      }
+      else{
+        this.Link(this.lastSelectednode, v as node);
+      }
     }
   }
   KeyDown(e: KeyboardEvent) {
@@ -182,7 +214,7 @@ export class AppComponent {
       this.delete(this.selected);
     }
     if (e.key === "n" || e.key === "N") {
-      this.MODE = mode.creatingNode;
+      this.addnode();
     }
   }
 
@@ -200,11 +232,10 @@ export class AppComponent {
     let x2 = this.evaluate_x(l.to);
     //self loop
     if (x1 == x2) {
-      return `M ${x1 - this.NODEWIDTH / 3} ${this.axis_height} T ${
-        x1 - this.NODEWIDTH / 3
-      } ${this.axis_height - this.NODEWIDTH} ${x1 + this.NODEWIDTH / 3} ${
-        this.axis_height - this.NODEWIDTH
-      } ${x2 + this.NODEWIDTH / 3} ${this.axis_height}`;
+      return `M ${x1 - this.NODEWIDTH / 4} ${this.axis_height} 
+      C ${x1 - this.NODEWIDTH / 2.5} ${this.axis_height - this.NODEWIDTH}
+       ${x1 + this.NODEWIDTH / 2.5} ${this.axis_height - this.NODEWIDTH}
+      ${x2 + this.NODEWIDTH / 4} ${this.axis_height}`;
     }
     res = `M ${x1} ${this.axis_height} Q ${(x1 + x2) / 2} ${
       this.axis_height - (x2 - x1) / 2
@@ -212,16 +243,17 @@ export class AppComponent {
     return res;
   }
   evaluate_x(node: node): number {
-    var res = this.NODEWIDTH / 2;
+    var res = 0;
+    var n = (window.innerWidth) / (this.nodes.length+1);
     if (!(this.nodes.length == 0)) {
-      res = (node.X * window.innerWidth) / this.nodes.length;
+      res = node.X * n;
       if (this.nodes.length >= 2 && this.nodes[this.nodes.length - 1] == node) {
         res -= this.NODEWIDTH / 2;
       } else if (this.nodes[0] == node) {
         res += this.NODEWIDTH / 2;
       }
     }
-    return res;
+    return res +  (window.innerWidth / (2*(this.nodes.length+1)));
   }
   evaluate_curve_midPoint_y(l: link) {
     let x0 = this.evaluate_x(l.from);
@@ -238,10 +270,16 @@ export class AppComponent {
     let mid_point_y = this.evaluate_curve_midPoint_y(l);
     let x1 = this.evaluate_x(l.from);
     let x2 = this.evaluate_x(l.to);
-    if (x1 == x2) {
-      return "";
-    }
     let mid_point_x = (x2 + x1) / 2;
+    if (x1 == x2) {
+      ArrowWidth=1/3*ArrowWidth;
+      let ArrowHeight=0.75*this.ArrowHeight
+      return `${mid_point_x + 1 + (1 / 3) * ArrowWidth} ${mid_point_y-3} ${
+        mid_point_x - (ArrowWidth * 2) / 3
+      } ${mid_point_y -3 - (ArrowHeight) / 3} ${
+        mid_point_x - (ArrowWidth * 2) / 3
+      } ${mid_point_y -3 + (ArrowHeight) / 3}`;
+    }
     if (x1 > x2) {
       ArrowWidth *= -1;
     }
@@ -253,6 +291,10 @@ export class AppComponent {
   }
   editGain(e: any) {
     (this.selected as link).gain = e.target.value;
+    e.target.value = "";
+  }
+  editName(e: any) {
+    (this.selected as node).name = e.target.value;
     e.target.value = "";
   }
 }
