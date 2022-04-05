@@ -8,6 +8,7 @@
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
     />
+    <script src="priority-queue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link
@@ -47,8 +48,8 @@
         <svg
           #canvas
           class="canvas"
-          [attr.width]="win.innerWidth - getOffset().left - 16"
-          [attr.height]="win.innerHeight - getOffset().top - 16"
+          [attr.width]="evaluateCanvasWidth()"
+          [attr.height]="evaluateCanvasWidth()"
           (mousedown)="resetSelection($event)"
         >
           <!-- <defs>
@@ -131,7 +132,7 @@
             [attr.x]="
               (evaluate_x(link.from) + evaluate_x(link.to)) / 2 - (link.gain.toString().length*4)
             "
-            [attr.y]="evaluate_curve_midPoint_y(link) - ArrowHeight"
+            [attr.y]="evaluate_curve_midPoint_y(link) - ArrowHeight + 6"
             fill="black"
             font-size="12"
             (mousedown)="select(link)"

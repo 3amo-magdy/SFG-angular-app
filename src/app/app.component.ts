@@ -5,7 +5,7 @@ import { link } from "./SFGComponents/link";
 import { mode } from "./SFGComponents/mode";
 import { node } from "./SFGComponents/node";
 import { IdGenerator } from "./SFGComponents/IdGenerator";
-
+import { PriorityQueue } from "./ds/PriorityQueue";
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
@@ -23,6 +23,8 @@ export class AppComponent {
   generator: IdGenerator;
   //front:
   win!: Window;
+  extraWidth:number;
+  extraHeight:number;
   @ViewChild("canvas")
   Ecanvas!: ElementRef;
   canvas!: SVGElement;
@@ -43,6 +45,8 @@ export class AppComponent {
     this.links = [];
     this.generator = new IdGenerator();
     this.win = window;
+    this.extraHeight = 0;
+    this.extraWidth = 0;
     this.NODEWIDTH = 40;
     this.axis_pointer = 0;
     this.node_name=0;
@@ -167,7 +171,7 @@ export class AppComponent {
   }
   addnode() {
     let id = this.generator.generate();
-    let newnode = new node(id, this.axis_pointer, this.axis_height,"x"+this.node_name++);
+    let newnode = new node(id, this.axis_pointer, this.axis_height,"X"+this.node_name++);
     this.nodes.push(newnode);
     this.axis_pointer++;
   }
@@ -188,6 +192,7 @@ export class AppComponent {
     from.Out.push(to);
     to.In.push(from);
     this.links.push(newLink);
+    this.links.sort((a:link,b:link)=>Math.abs(a.to.X-a.from.X)>Math.abs(b.to.X-b.from.X)? -1 : Math.abs(a.to.X-a.from.X)<Math.abs(b.to.X-b.from.X)? 1 : 0);
   }
   mouseOut(v:node,e:MouseEvent){
     let cx = this.evaluate_x(v)+this.getOffset().left;
@@ -220,7 +225,6 @@ export class AppComponent {
       this.addnode();
     }
   }
-
   getItem(arr: IViewable[], id: string) {
     for (var i = 0; i < arr.length; i++) {
       if (arr[i].id === id) {
@@ -248,6 +252,10 @@ export class AppComponent {
   evaluate_x(node: node): number {
     var res = 0;
     var n = (window.innerWidth) / (this.nodes.length+1);
+    if(n<2 * this.NODEWIDTH){
+      n = 2 * this.NODEWIDTH;
+      this.extraWidth = n*(this.nodes.length+1)-(window.innerWidth);
+    }
     if (!(this.nodes.length == 0)) {
       res = node.X * n;
       if (this.nodes.length >= 2 && this.nodes[this.nodes.length - 1] == node) {
@@ -299,5 +307,11 @@ export class AppComponent {
   editName(e: any) {
     (this.selected as node).name = e.target.value;
     e.target.value = "";
+  }
+  evaluateCanvasWidth():number{
+    return this.win.innerWidth -this.getOffset().left - 16 + this.extraWidth;
+  }
+  evaluateCanvasHeight():number{
+    return this.win.innerHeight -this.getOffset().top - 16 + this.extraHeight;
   }
 }
