@@ -17,7 +17,6 @@ export class AppComponent {
   lastSelectednode!: node;
   lastLeftnode!: node;
 
-
   generator: IdGenerator;
   //front:
   win!: Window;
@@ -31,7 +30,7 @@ export class AppComponent {
   @ViewChild("nameBox")
   Ename!:ElementRef;
 
-  axis_height: number = innerHeight / 2;
+  axis_height: number = innerHeight / 3;
   axis_pointer!: number;
   node_name!:number;
   NODEWIDTH = 40;
@@ -65,7 +64,17 @@ export class AppComponent {
     this.canvas = this.Ecanvas.nativeElement as SVGElement;
   }
   update_axis() {
-    this.axis_height = window.innerHeight / 2;
+    if(this.links.length>0){
+      let k = this.evaluate_curve_height(this.links[0]) + 16;
+      console.log(k);
+      if(k>this.axis_height){
+        this.axis_height = k;
+      }
+    }
+    else{
+      this.axis_height = innerHeight/3;
+    }
+    console.log(innerHeight/3);
   }
   getOffset() {
     if (this.canvas) {
@@ -121,6 +130,7 @@ export class AppComponent {
         this.axis_pointer--;
         break;
       case mode.selectingLink:
+        this.leveldown(v as link);
         this.disconnectBothnodes(v as link);
         this.removefromarr(this.links, v);
         break;
@@ -128,7 +138,14 @@ export class AppComponent {
         return;
     }
   }
-
+  private leveldown(l :link){
+    let links = l.from.OutLinks;
+    for (let index = 0; index < links.length; index++) {
+      if(links[index].to == l.to){
+        links[index].level--;
+      }
+    }
+  }
   private removefromarr(arr: IViewable[], v: IViewable): number {
     for (var i = 0; i < arr.length; i++) {
       if (v == arr[i]) {
@@ -289,10 +306,19 @@ export class AppComponent {
       }
       lev = Math.floor(lev/2);
       return (0.125)*this.axis_height+6*0.125*(this.axis_height - sign *1.4* this.NODEWIDTH - sign * lev * this.LEVEL/2)+0.125*(this.axis_height);
-      // return (this.axis_height - 0.5*this.NODEWIDTH - lev * this.LEVEL*1/3);
     }
     let y1 = this.axis_height - (x2 - x0) / 2;
     return 0.5 * this.axis_height + 0.5 * y1 - lev*this.LEVEL/2;
+  }
+  evaluate_curve_height(l:link):number{
+    let x1 = this.evaluate_x(l.from);
+    let x2 = this.evaluate_x(l.to);
+    let lev = l.level;
+    if (x1 == x2) {
+      lev = Math.floor(lev/2);
+      return 1.4* this.NODEWIDTH + lev *this.LEVEL/2
+    }
+    return Math.abs(x2 - x1) / 4 + (lev * this.LEVEL);
   }
   evaluate_arrow(l: link): string {
     let res = "";
@@ -329,6 +355,6 @@ export class AppComponent {
     return this.win.innerWidth -this.getOffset().left - 16 + this.extraWidth;
   }
   evaluateCanvasHeight():number{
-    return this.win.innerHeight -this.getOffset().top - 16 + this.extraHeight;
+    return this.axis_height*2 + 32;
   }
 }
