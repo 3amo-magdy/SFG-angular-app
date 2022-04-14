@@ -197,9 +197,23 @@ export class AppComponent {
   }
   addnode() {
     let id = this.generator.generate();
-    let newnode = new node(id, this.axis_pointer, this.axis_height,"X"+this.node_name++);
+    let name : string = "X"+this.node_name++;
+
+    
+    while(this.dublicateName(name)){
+      name = "X"+this.node_name++;
+    }
+    let newnode = new node(id, this.axis_pointer, this.axis_height,name);
     this.nodes.push(newnode);
     this.axis_pointer++;
+  }
+  private dublicateName(name: string){
+    for (let index = 0; index < this.nodes.length; index++) {
+      if(this.nodes[index].name==name){
+        return true;
+      }
+    }
+    return false;
   }
   islinked(from: node, to: node): number {
     // if (from.Out.includes(to)) {
@@ -363,8 +377,21 @@ export class AppComponent {
     e.target.value = "";
   }
   editName(e: any) {
+    let flag = false;
+    this.nodes.forEach(n => {
+      if(n.name===e.target.value){
+        this.win.alert("another node with that same name exists");
+        e.target.value = "";
+        flag = true;
+        return;
+      }
+    });
+    if(flag){
+      return;
+    }
     (this.selected as node).name = e.target.value;
     e.target.value = "";
+    
   }
   evaluateCanvasWidth():number{
     return this.win.innerWidth -this.getOffset().left - 16 + this.extraWidth;
