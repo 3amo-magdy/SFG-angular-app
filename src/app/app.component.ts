@@ -289,7 +289,7 @@ export class AppComponent {
       }
       lev = Math.floor(lev/2);
       return (0.125)*this.axis_height+6*0.125*(this.axis_height - sign *1.4* this.NODEWIDTH - sign * lev * this.LEVEL/2)+0.125*(this.axis_height);
-      return (this.axis_height - 0.5*this.NODEWIDTH - lev * this.LEVEL*1/3);
+      // return (this.axis_height - 0.5*this.NODEWIDTH - lev * this.LEVEL*1/3);
     }
     let y1 = this.axis_height - (x2 - x0) / 2;
     return 0.5 * this.axis_height + 0.5 * y1 - lev*this.LEVEL/2;
