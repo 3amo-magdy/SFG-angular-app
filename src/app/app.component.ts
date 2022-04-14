@@ -37,6 +37,7 @@ export class AppComponent {
   NODEWIDTH = 40;
   ArrowWidth = 12; //pixels
   ArrowHeight = 10; //pixels
+  LEVEL = 50;
   holding: boolean;
   constructor() {
     this.nodes = [];
@@ -173,24 +174,25 @@ export class AppComponent {
     this.nodes.push(newnode);
     this.axis_pointer++;
   }
-  islinked(from: node, to: node): boolean {
-    if (from.Out.includes(to)) {
-      return true;
+  islinked(from: node, to: node): number {
+    // if (from.Out.includes(to)) {
+    //   return true;
+    // }
+    for (var i=from.OutLinks.length -1 ;i>-1;i--) {
+      if(from.OutLinks[i].to == to){
+        return from.OutLinks[i].level+1;
+      }
     }
-    return false;
+    return 0;
   }
   Link(from: node, to: node): void {
-    if (this.islinked(from, to)) {
-      window.alert("already linked");
-      return;
-    }
-    var newLink = new link(from, to);
+    var newLink = new link(from, to,this.islinked(from, to));
     from.OutLinks.push(newLink);
     to.InLinks.push(newLink);
     from.Out.push(to);
     to.In.push(from);
     this.links.push(newLink);
-    this.links.sort((a:link,b:link)=>Math.abs(a.to.X-a.from.X)>Math.abs(b.to.X-b.from.X)? -1 : Math.abs(a.to.X-a.from.X)<Math.abs(b.to.X-b.from.X)? 1 : 0);
+    this.links.sort((a:link,b:link)=>Math.abs(a.to.X-a.from.X)>Math.abs(b.to.X-b.from.X)? -1 : Math.abs(a.to.X-a.from.X)<Math.abs(b.to.X-b.from.X)? 1 : (a.level>b.level)? -1 : 1);
   }
   mouseOut(v:node,e:MouseEvent){
     let cx = this.evaluate_x(v)+this.getOffset().left;
@@ -235,16 +237,25 @@ export class AppComponent {
     var res: string;
     let x1 = this.evaluate_x(l.from);
     let x2 = this.evaluate_x(l.to);
+    let lev = l.level;
     //self loop
     if (x1 == x2) {
+      let sign = 1;
+      if(lev%2==0){
+        sign = -1;
+      }
+      lev = Math.floor(lev/2);
       return `M ${x1 - this.NODEWIDTH / 4} ${this.axis_height} 
-      C ${x1 - this.NODEWIDTH / 2.5} ${this.axis_height - this.NODEWIDTH}
-       ${x1 + this.NODEWIDTH / 2.5} ${this.axis_height - this.NODEWIDTH}
+      C ${x1 - this.NODEWIDTH / 2.5} ${this.axis_height - sign *1.4* this.NODEWIDTH - sign * lev *this.LEVEL/2}
+       ${x1 + this.NODEWIDTH / 2.5} ${this.axis_height - sign *1.4* this.NODEWIDTH - sign * lev * this.LEVEL/2}
       ${x2 + this.NODEWIDTH / 4} ${this.axis_height}`;
     }
-    res = `M ${x1} ${this.axis_height} Q ${(x1 + x2) / 2} ${
-      this.axis_height - (x2 - x1) / 2
-    } ${x2} ${this.axis_height}`;
+    if (x2<x1){
+      lev *=-1;
+    }
+    res = `M ${x1} ${this.axis_height} 
+    Q ${(x1 + x2) / 2} ${this.axis_height - (x2 - x1) / 2 - (lev * this.LEVEL)} 
+      ${x2} ${this.axis_height}`;
     return res;
   }
   evaluate_x(node: node): number {
@@ -267,11 +278,21 @@ export class AppComponent {
   evaluate_curve_midPoint_y(l: link) {
     let x0 = this.evaluate_x(l.from);
     let x2 = this.evaluate_x(l.to);
+    let lev = l.level;
+    if (x2<x0){
+      lev *=-1;
+    }
     if (x0 == x2) {
-      return this.axis_height - (2 / 3) * this.NODEWIDTH;
+      let sign  = 1;
+      if(lev%2==0){
+        sign = -1;
+      }
+      lev = Math.floor(lev/2);
+      return (0.125)*this.axis_height+6*0.125*(this.axis_height - sign *1.4* this.NODEWIDTH - sign * lev * this.LEVEL/2)+0.125*(this.axis_height);
+      return (this.axis_height - 0.5*this.NODEWIDTH - lev * this.LEVEL*1/3);
     }
     let y1 = this.axis_height - (x2 - x0) / 2;
-    return 0.5 * this.axis_height + 0.5 * y1;
+    return 0.5 * this.axis_height + 0.5 * y1 - lev*this.LEVEL/2;
   }
   evaluate_arrow(l: link): string {
     let res = "";
@@ -283,11 +304,9 @@ export class AppComponent {
     if (x1 == x2) {
       ArrowWidth=1/3*ArrowWidth;
       let ArrowHeight=0.75*this.ArrowHeight
-      return `${mid_point_x + 1 + (1 / 3) * ArrowWidth} ${mid_point_y-3} ${
-        mid_point_x - (ArrowWidth * 2) / 3
-      } ${mid_point_y -3 - (ArrowHeight) / 3} ${
-        mid_point_x - (ArrowWidth * 2) / 3
-      } ${mid_point_y -3 + (ArrowHeight) / 3}`;
+      return `${mid_point_x + 1 + (1 / 3) * ArrowWidth} ${mid_point_y} 
+      ${mid_point_x - (ArrowWidth * 2) / 3} ${mid_point_y - (ArrowHeight) / 3} 
+      ${mid_point_x - (ArrowWidth * 2) / 3} ${mid_point_y + (ArrowHeight) / 3}`;
     }
     if (x1 > x2) {
       ArrowWidth *= -1;
