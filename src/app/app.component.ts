@@ -366,6 +366,6 @@ export class AppComponent {
     return this.win.innerWidth -this.getOffset().left - 16 + this.extraWidth;
   }
   evaluateCanvasHeight():number{
-    return this.axis_height*2 + 32;
+    return this.axis_height*2;
   }
 }
