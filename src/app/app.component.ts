@@ -83,7 +83,7 @@ export class AppComponent {
       }
     }
     else{
-      this.axis_height = innerHeight/3;
+      this.axis_height = innerHeight/4;
     }
     console.log(innerHeight/3);
   }
