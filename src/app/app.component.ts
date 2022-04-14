@@ -54,19 +54,26 @@ export class AppComponent {
     this.MODE = mode.linking;
   }
   ngAfterViewInit() {
-    document.addEventListener("keydown", this.KeyDown.bind(this), false);
-    document.addEventListener("resize", this.update_axis.bind(this), false);
-    document.addEventListener("scroll", this.update_axis.bind(this), false);
-    document.addEventListener("mouseenter", this.update_axis.bind(this), false);
-    document.addEventListener("mousedown", this.update_axis.bind(this), false);
-    document.addEventListener("mouseleave", this.update_axis.bind(this), false);
+    // document.addEventListener("keydown", this.KeyDown.bind(this), false);
+    // document.addEventListener("resize", this.update_axis.bind(this), false);
+    // document.addEventListener("scroll", this.update_axis.bind(this), false);
+    // document.addEventListener("mouseenter", this.update_axis.bind(this), false);
+    // document.addEventListener("mousedown", this.update_axis.bind(this), false);
+    // document.addEventListener("mouseleave", this.update_axis.bind(this), false);
 
     this.canvas = this.Ecanvas.nativeElement as SVGElement;
   }
   update_axis() {
     if(this.links.length>0){
+      let maxSelfLoopH = 0;
+      for (let index = this.links.length -1; this.links[index].from==this.links[index].to;index++) {
+        let s =this.evaluate_curve_height(this.links[index]);
+        if(s>maxSelfLoopH){
+          maxSelfLoopH = s;
+        }
+      }
       let k = this.evaluate_curve_height(this.links[0]) + 16;
-      console.log(k);
+      k = Math.max(k,maxSelfLoopH+16);
       if(k>this.axis_height){
         this.axis_height = k;
       }
@@ -134,9 +141,8 @@ export class AppComponent {
         this.disconnectBothnodes(v as link);
         this.removefromarr(this.links, v);
         break;
-      default:
-        return;
     }
+    this.update_axis();
   }
   private leveldown(l :link){
     let links = l.from.OutLinks;
@@ -210,6 +216,7 @@ export class AppComponent {
     to.In.push(from);
     this.links.push(newLink);
     this.links.sort((a:link,b:link)=>Math.abs(a.to.X-a.from.X)>Math.abs(b.to.X-b.from.X)? -1 : Math.abs(a.to.X-a.from.X)<Math.abs(b.to.X-b.from.X)? 1 : (a.level>b.level)? -1 : 1);
+    this.update_axis();
   }
   mouseOut(v:node,e:MouseEvent){
     let cx = this.evaluate_x(v)+this.getOffset().left;
