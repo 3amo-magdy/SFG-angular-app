@@ -22,22 +22,15 @@
       <button id="delete" (click)="delete(selected)" class="btn">
         <i class="fa fa-trash"></i> remove
       </button>
-
-      <!-- <button id="start" (click)="start()" class="btn"><i class="fa fa-play"></i> Start</button>
-    <button id="pause"  class="btn" (click)="stop()"><i class="fa fa-stop-circle" style="color:red"></i>
-      End</button>
-    <button id="pause" (click)="pause()" class="btn"><i class="fa fa-pause"></i> pause</button> -->
-      <!-- <button id="Back"  (click)='replayO()'  class="btn"><i class="fa fa-reply"></i> reply</button> -->
-
-      <!-- <button id="new" (click)="new()" class="btn"><i class="fa fa-new"></i> new simulation</button> -->
-      <!-- <button id="replay" (click)="replay()" class="btn"><i class='fa fa-reply'></i> Reply </button> -->
-      <input #gainBox
+      <input
+        #gainBox
         type="text"
         placeholder="gain"
         [disabled]="!selectingAlink"
         (keyup.enter)="editGain($event)"
       />
-      <input #nameBox
+      <input
+        #nameBox
         type="text"
         id="product"
         placeholder="node name"
@@ -52,38 +45,6 @@
           [attr.height]="evaluateCanvasHeight()"
           (mousedown)="resetSelection($event)"
         >
-          <!-- <defs>
-      <marker>[attr.markerWidth]="8" [attr.markerHeight]="4" [attr.refX]="0" [attr.refY]="2" [attr.orient]="auto"
-        id="arrowhead"
-        <polygon> points="0 0,8 2,0 4" </polygon>
-      </marker>
-      <marker> id="arrowhead" markerWidth="8" markerHeight="4" refX="0" refY="2" orient="auto"<polygon> [points]="0 0,8 2,0 4" </polygon></marker>
-    </defs> -->
-          <defs>
-            <marker
-              #arr
-              id="arr"
-              class="arrow"
-              refX="0"
-              refY="2.5"
-              markerWidth="3"
-              markerHeight="5"
-              orient="auto"
-              style="z-index: 102"
-            >
-              <polygon points="0 0,3 2.5,0 5"></polygon>
-            </marker>
-          </defs>
-
-          <!-- <line class="line"  *ngFor="let link of links" [attr.x1]="link.x0" [attr.y1]="link.y0" [attr.x2]="link.m0" [attr.y2]="link.m1" (mousedown)="select(link)" > -->
-          <!-- </line> -->
-          <!-- <line class="line" *ngFor="let link of links" [attr.x1]="link.m0" [attr.y1]="link.m1" [attr.x2]="link.x1" [attr.y2]="link.y1" marker-start="url(#lol)"  (mousedown)="select(link)" > -->
-          <!-- </line> -->
-
-          <!-- <rect class="q" *ngFor="let node of nodes" width="70" height="30"
-          (mousedown)="select(q)" (mouseup)="mouseUp(q)"(mousedown)="keyQ($event,q)" [attr.x]="q.x-35" [attr.y]="q.y-15" [attr.fill]="q.color">
-        </rect> -->
-
           <path
             class="line"
             *ngFor="let link of links"
@@ -108,28 +69,27 @@
             r="20"
             (mousedown)="select(m)"
             (mouseup)="mouseUp(m)"
-            (mouseout)="mouseOut(m,$event)"
+            (mouseout)="mouseOut(m, $event)"
           ></circle>
           <text
             class="nodeText"
             *ngFor="let node of nodes"
-            [attr.x]="
-              evaluate_x(node)-(node.name.toString().length*4)
-            "
-            [attr.y]="axis_height+4"
+            [attr.x]="evaluate_x(node) - node.name.toString().length * 4"
+            [attr.y]="axis_height + 4"
             fill="black"
             font-size="12"
             (mousedown)="select(node)"
             (click)="select(node)"
-            (mouseup)="mouseUp(node)"            
+            (mouseup)="mouseUp(node)"
           >
-            {{node.name}}
+            {{ node.name }}
           </text>
           <text
             class="gainText"
             *ngFor="let link of links"
             [attr.x]="
-              (evaluate_x(link.from) + evaluate_x(link.to)) / 2 - (link.gain.toString().length*4)
+              (evaluate_x(link.from) + evaluate_x(link.to)) / 2 -
+              link.gain.toString().length * 4
             "
             [attr.y]="evaluate_curve_midPoint_y(link) - ArrowHeight + 6"
             fill="black"
@@ -140,6 +100,12 @@
             {{ link.gain }}
           </text>
         </svg>
+      </div>
+      <div class="res">
+        Output Shall be here <br>
+        ... <br> 
+        ... <br> 
+        ... <br>
       </div>
     </div>
   </body>

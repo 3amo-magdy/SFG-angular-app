@@ -30,7 +30,7 @@ export class AppComponent {
   @ViewChild("nameBox")
   Ename!:ElementRef;
 
-  axis_height: number = innerHeight / 3;
+  axis_height: number = innerHeight / 4;
   axis_pointer!: number;
   node_name!:number;
   NODEWIDTH = 40;
@@ -55,8 +55,9 @@ export class AppComponent {
   }
   ngAfterViewInit() {
     // document.addEventListener("keydown", this.KeyDown.bind(this), false);
-    // document.addEventListener("resize", this.update_axis.bind(this), false);
-    // document.addEventListener("scroll", this.update_axis.bind(this), false);
+    document.addEventListener("resize", this.update_axis.bind(this), false);
+    document.addEventListener("scroll", this.update_axis.bind(this), false);
+
     // document.addEventListener("mouseenter", this.update_axis.bind(this), false);
     // document.addEventListener("mousedown", this.update_axis.bind(this), false);
     // document.addEventListener("mouseleave", this.update_axis.bind(this), false);
