@@ -54,7 +54,7 @@ export class AppComponent {
     this.MODE = mode.linking;
   }
   ngAfterViewInit() {
-    // document.addEventListener("keydown", this.KeyDown.bind(this), false);
+    document.addEventListener("keydown", this.KeyDown.bind(this), false);
     document.addEventListener("resize", this.update_axis.bind(this), false);
     document.addEventListener("scroll", this.update_axis.bind(this), false);
 
