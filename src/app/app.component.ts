@@ -64,9 +64,11 @@ export class AppComponent {
     this.canvas = this.Ecanvas.nativeElement as SVGElement;
   }
   update_axis() {
+    console.log(this.links);
     if(this.links.length>0){
       let maxSelfLoopH = 0;
-      for (let index = this.links.length -1; this.links[index].from==this.links[index].to;index++) {
+      for (let index = this.links.length-1;(index > -1 && this.links[index].from==this.links[index].to);index--) {
+        console.log(index);
         let s =this.evaluate_curve_height(this.links[index]);
         if(s>maxSelfLoopH){
           maxSelfLoopH = s;
@@ -74,6 +76,7 @@ export class AppComponent {
       }
       let k = this.evaluate_curve_height(this.links[0]) + 16;
       k = Math.max(k,maxSelfLoopH+16);
+      console.log(k);
       if(k>this.axis_height){
         this.axis_height = k;
       }
@@ -323,7 +326,7 @@ export class AppComponent {
     let lev = l.level;
     if (x1 == x2) {
       lev = Math.floor(lev/2);
-      return 1.4* this.NODEWIDTH + lev *this.LEVEL/2
+      return 6/8*(1.4* this.NODEWIDTH + lev *this.LEVEL/2)
     }
     return Math.abs(x2 - x1) / 4 + (lev * this.LEVEL);
   }
