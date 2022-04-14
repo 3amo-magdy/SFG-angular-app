@@ -28,6 +28,7 @@
         placeholder="gain"
         [disabled]="!selectingAlink"
         (keyup.enter)="editGain($event)"
+        (input)="editGain($event)"
       />
       <input
         #nameBox

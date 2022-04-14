@@ -374,7 +374,6 @@ export class AppComponent {
       return;
     }
     (this.selected as link).gain = Number(e.target.value);
-    e.target.value = "";
   }
   editName(e: any) {
     let flag = false;
