@@ -151,7 +151,7 @@ export class AppComponent {
   private leveldown(l :link){
     let links = l.from.OutLinks;
     for (let index = 0; index < links.length; index++) {
-      if(links[index].to == l.to){
+      if(links[index].to == l.to&&links[index].level>l.level){
         links[index].level--;
       }
     }
@@ -355,7 +355,11 @@ export class AppComponent {
     } ${mid_point_y + (this.ArrowHeight * 1) / 3}`;
   }
   editGain(e: any) {
-    (this.selected as link).gain = e.target.value;
+    if(isNaN(Number(e.target.value))){
+      e.target.value = "";
+      return;
+    }
+    (this.selected as link).gain = Number(e.target.value);
     e.target.value = "";
   }
   editName(e: any) {
