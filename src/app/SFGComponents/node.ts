@@ -1,4 +1,4 @@
-import { IViewable } from "./IViewable";
+import { IViewable } from "./GUI/IViewable";
 import { link } from "./link";
 
 
@@ -8,7 +8,8 @@ export class node extends IViewable{
   private _Out!: node[];
   private _InLinks!: link[];
   private _OutLinks!: link[];
-
+  
+  //for drawing:
   private _color: string;
   private _X!: number;
   public get X(): number {
@@ -56,7 +57,6 @@ export class node extends IViewable{
   public set In(value: node[]) {
     this._In = value;
   }
-
   public get name(): string {
   return this._name;
   }

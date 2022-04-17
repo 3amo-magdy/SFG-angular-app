@@ -1,10 +1,11 @@
-import { IViewable } from "./IViewable";
+import { IViewable } from "./GUI/IViewable";
 import { node } from "./node";
 
 export class link extends IViewable{
     from:node;
     to:node;
     gain:number;
+    
     //mainly for drawing :
     level:number;
     constructor(f:node,t:node,level:number){

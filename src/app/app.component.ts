@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from "@angular/core";
-import { IViewable } from "./SFGComponents/IViewable";
+import { IViewable } from "./SFGComponents/GUI/IViewable";
 import { link } from "./SFGComponents/link";
-import { mode } from "./SFGComponents/mode";
+import { mode } from "./SFGComponents/GUI/mode";
 import { node } from "./SFGComponents/node";
 import { IdGenerator } from "./SFGComponents/IdGenerator";
 export const NULL:node = new node("",0,0,"");
