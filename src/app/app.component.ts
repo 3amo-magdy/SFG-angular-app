@@ -359,7 +359,7 @@ export class AppComponent {
       lev = Math.floor(lev/2);
       return 6/8*(1.4* this.NODEWIDTH + lev *this.LEVEL/2)
     }
-    return Math.abs(x2 - x1) / 4 + (lev * this.LEVEL);
+    return Math.abs(x2 - x1) / 4 + (lev * this.LEVEL)/2;
   }
   evaluate_arrow(l: link): string {
     let res = "";
