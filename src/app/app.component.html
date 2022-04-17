@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>simulation</title>
+    <title>SFG-App</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
@@ -17,13 +17,18 @@
     />
   </head>
   <body>
-    <div>
-      <button id="Node" class="btn" (click)="addnode()">+Node</button>
+    <div class="app-shell">
+    <div class="app-container">
+      <div class="pan">
+      <button id="Node" class="btn" (click)="addnode()">
+        +Node
+      </button>
       <button id="delete" (click)="delete(selected)" class="btn">
-        <i class="fa fa-trash"></i> remove
+        <i class="fa fa-trash"></i> Remove
       </button>
       <input
         #gainBox
+        class="in"
         type="number"
         placeholder="gain"
         [disabled]="!selectingAlink"
@@ -32,19 +37,21 @@
       />
       <input
         #nameBox
+        class="in"
         type="text"
         id="product"
         placeholder="node name"
         [disabled]="!selectingAnode"
         (keyup.enter)="editName($event)"
       />
+    </div>
       <div>
         <svg
           #canvas
           class="canvas"
           [attr.width]="evaluateCanvasWidth()"
           [attr.height]="evaluateCanvasHeight()"
-          (mousedown)="resetSelection($event)"
+          (mousedown)="resetSelection()"
         >
           <path
             class="line"
@@ -96,18 +103,20 @@
             fill="black"
             font-size="12"
             (mousedown)="select(link)"
+            (click)="select(link)"
             (mouseup)="mouseUp(link)"
           >
             {{ link.gain }}
           </text>
         </svg>
       </div>
-      <div class="res">
-        Output Shall be here <br>
+      <div #res id="res">
+        output here ?<br>
         ... <br> 
         ... <br> 
         ... <br>
       </div>
     </div>
+  </div>
   </body>
 </html>

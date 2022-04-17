@@ -4,11 +4,14 @@ import { link } from "./SFGComponents/link";
 import { mode } from "./SFGComponents/mode";
 import { node } from "./SFGComponents/node";
 import { IdGenerator } from "./SFGComponents/IdGenerator";
+export const NULL:node = new node("",0,0,"");
+
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
 })
+
 export class AppComponent {
   nodes!: node[];
   links!: link[];
@@ -16,6 +19,7 @@ export class AppComponent {
   selected!: IViewable;
   lastSelectednode!: node;
   lastLeftnode!: node;
+
 
   generator: IdGenerator;
   //front:
@@ -29,6 +33,8 @@ export class AppComponent {
   Egain!:ElementRef;
   @ViewChild("nameBox")
   Ename!:ElementRef;
+  @ViewChild("res")
+  Eres!:ElementRef;
 
   axis_height: number = innerHeight / 4;
   axis_pointer!: number;
@@ -59,7 +65,7 @@ export class AppComponent {
     document.addEventListener("scroll", this.update_axis.bind(this), false);
 
     // document.addEventListener("mouseenter", this.update_axis.bind(this), false);
-    // document.addEventListener("mousedown", this.update_axis.bind(this), false);
+    document.addEventListener("mousedown", this.update_axis.bind(this), false);
     // document.addEventListener("mouseleave", this.update_axis.bind(this), false);
 
     this.canvas = this.Ecanvas.nativeElement as SVGElement;
@@ -78,14 +84,14 @@ export class AppComponent {
       let k = this.evaluate_curve_height(this.links[0]) + 16;
       k = Math.max(k,maxSelfLoopH+16);
       console.log(k);
-      if(k>this.axis_height){
+      if(k>this.win.innerHeight/4){
         this.axis_height = k;
       }
     }
     else{
-      this.axis_height = innerHeight/4;
+      this.axis_height = this.win.innerHeight/4;
     }
-    console.log(innerHeight/3);
+    this.win.innerHeight -(this.getOffset().top+this.evaluateCanvasHeight());
   }
   getOffset() {
     if (this.canvas) {
@@ -127,6 +133,9 @@ export class AppComponent {
   }
 
   delete(v: IViewable) {
+    if(v==NULL){
+      return;
+    }
     let arr;
     switch (this.MODE) {
       case mode.selectingNode:
@@ -186,10 +195,14 @@ export class AppComponent {
   Mode_creatingNode() {
     this.MODE = mode.creatingNode;
   }
-  resetSelection(e: MouseEvent) {
+  resetSelection() {
     if(!this.holding){
-      console.log("reset");
       this.MODE = mode.linking;
+      this.selected = NULL;
+      this.lastLeftnode = NULL;
+      this.lastSelectednode = NULL;
+      (this.Egain.nativeElement as HTMLInputElement).value = "";
+      (this.Ename.nativeElement as HTMLInputElement).value = "";
     }
   }
   keep_holding(){
@@ -198,8 +211,6 @@ export class AppComponent {
   addnode() {
     let id = this.generator.generate();
     let name : string = "X"+this.node_name++;
-
-    
     while(this.dublicateName(name)){
       name = "X"+this.node_name++;
     }
@@ -247,20 +258,22 @@ export class AppComponent {
   }
   mouseUp(v: IViewable) {
     this.holding = false;
-    if (this.MODE == mode.selectingNode && v instanceof node) {
+    if (this.MODE == mode.selectingNode && v instanceof node &&this.lastSelectednode != NULL) {
       if(v == this.lastSelectednode){
         if(this.lastSelectednode == this.lastLeftnode){
           this.Link(this.lastSelectednode, v as node);
+          this.resetSelection();
         }
       }
       else{
         this.Link(this.lastSelectednode, v as node);
+        this.resetSelection();
       }
     }
   }
   KeyDown(e: KeyboardEvent) {
     let keyName = e.key;
-    if (e.key === "Delete" || e.key === "D" || e.key === "d") {
+    if (this.selected != NULL && e.key === "Delete" || e.key === "D" || e.key === "d") {
       this.delete(this.selected);
     }
     if (e.key === "n" || e.key === "N") {
@@ -397,5 +410,8 @@ export class AppComponent {
   }
   evaluateCanvasHeight():number{
     return this.axis_height*2;
+  }
+  resH(){
+    (this.Eres.nativeElement as HTMLDivElement).style.height=`${this.win.innerHeight -(this.getOffset().top+this.evaluateCanvasHeight())}`;
   }
 }
