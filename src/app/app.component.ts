@@ -15,11 +15,12 @@ export const NULL:node = new node("",0,0,"");
 export class AppComponent {
   nodes!: node[];
   links!: link[];
+  startNode!:node;
+  endNode!:node;
   MODE!: mode;
   selected!: IViewable;
   lastSelectednode!: node;
   lastLeftnode!: node;
-
 
   generator: IdGenerator;
   //front:
@@ -35,7 +36,7 @@ export class AppComponent {
   Ename!:ElementRef;
   @ViewChild("res")
   Eres!:ElementRef;
-
+  result:string;
   axis_height: number = innerHeight / 4;
   axis_pointer!: number;
   node_name!:number;
@@ -44,6 +45,7 @@ export class AppComponent {
   ArrowHeight = 10; //pixels
   LEVEL = 50;
   holding: boolean;
+  editing: boolean = true;
   constructor() {
     this.nodes = [];
     this.links = [];
@@ -55,6 +57,8 @@ export class AppComponent {
     this.axis_pointer = 0;
     this.node_name=0;
     this.holding = false;
+    this.editing=true;
+    this.result="";
   }
   ngOnInit() {
     this.MODE = mode.linking;
@@ -92,6 +96,16 @@ export class AppComponent {
       this.axis_height = this.win.innerHeight/4;
     }
     this.win.innerHeight -(this.getOffset().top+this.evaluateCanvasHeight());
+  }
+  clear(){
+    this.links=[];
+    this.nodes=[];
+    this.MODE = mode.linking;
+    this.extraHeight = 0;
+    this.extraWidth = 0;
+    this.axis_pointer = 0;
+    this.node_name=0;
+    this.holding = false;
   }
   getOffset() {
     if (this.canvas) {
@@ -384,6 +398,18 @@ export class AppComponent {
       mid_point_x - (ArrowWidth * 2) / 3
     } ${mid_point_y + (this.ArrowHeight * 1) / 3}`;
   }
+  evaluate_node_color(n:node):string{
+    if(n==this.startNode){
+      return("rgb(20, 120, 0)");
+    }
+    if(n==this.endNode){
+      return("rgb(20, 0, 120)");
+    }
+    if(this.MODE==mode.selectingNode&&n==this.lastSelectednode){
+      return("rgb(70, 0, 20)");
+    }
+    return("rgb(156, 0, 0)");
+  }
   editGain(e: any) {
     if(isNaN(Number(e.target.value))){
       e.target.value = "";
@@ -416,5 +442,44 @@ export class AppComponent {
   }
   resH(){
     (this.Eres.nativeElement as HTMLDivElement).style.height=`${this.win.innerHeight -(this.getOffset().top+this.evaluateCanvasHeight())}`;
+  }
+  selectStart(){
+    if(this.MODE==mode.selectingNode&&this.lastSelectednode!=this.endNode){
+      if(this.lastLeftnode.In.length>0){
+        window.alert("the selected node can't take the first node role");
+        return;
+      }
+      this.startNode=this.lastSelectednode;
+    }
+  }
+  selectEnd(){
+    if(this.MODE==mode.selectingNode&&this.lastSelectednode!=this.startNode){
+      if(this.lastLeftnode.Out.length>0){
+        window.alert("the selected node can't take the input node role");
+        return;
+      }
+      this.endNode=this.lastSelectednode;
+    }
+  }
+  canSolve(){
+    if(this.startNode==undefined||this.endNode==undefined){
+      window.alert("please make sure to pick both the input and output nodes");
+      return false;
+    }
+    for (let index = 0; index < this.nodes.length; index++) {
+      if(this.nodes[index].In.length==0&&this.startNode!=this.nodes[index]){
+        window.alert("there can't be more than one node acting as input \n(such systems aren't supported yet)");
+        return false;
+      } 
+    }
+    return true;
+  }
+  solve(){
+    if(!this.canSolve()){
+      this.result="make sure to pick both: starting node & end node";
+    }
+    else{
+      this.result="solved !";
+    }
   }
 }

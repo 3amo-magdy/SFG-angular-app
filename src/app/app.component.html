@@ -30,7 +30,6 @@
         class="in"
         type="number"
         placeholder="gain"
-        [disabled]="!selectingAlink"
         (keyup.enter)="editGain($event)"
         (input)="editGain($event)"
       />
@@ -40,9 +39,20 @@
         type="text"
         id="product"
         placeholder="node name"
-        [disabled]="!selectingAnode"
         (keyup.enter)="editName($event)"
       />
+      <button id="Node" class="btn" (click)="selectStart()">
+        set Input
+      </button>
+      <button id="Node" class="btn" (click)="selectEnd()">
+        set Output
+      </button>
+      <button id="Node" class="btn" (click)="clear()">
+        clear
+      </button>
+      <button id="Node" class="btn" (click)="solve()">
+        solve
+      </button>
     </div>
       <div>
         <svg
@@ -73,9 +83,11 @@
             *ngFor="let m of nodes"
             [attr.cx]="evaluate_x(m)"
             [attr.cy]="axis_height"
+            
             r="20"
             (mousedown)="select(m)"
             (mouseup)="mouseUp(m)"
+            [attr.fill]="evaluate_node_color(m)"
             (mouseout)="mouseOut(m, $event)"
           ></circle>
           <text
@@ -112,7 +124,7 @@
       <div #res id="res">
         output here ?<br>
         ... <br> 
-        ... <br> 
+        {{result}}<br> 
         ... <br>
       </div>
     </div>
