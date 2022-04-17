@@ -1,138 +1,117 @@
-
 .app-shell {
-    position: absolute;
-    height: fit-content;
-    width: max-content;
-    justify-content: center;
-    justify-self: center;
-    align-items: center;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #3b3b3b;
-  }
-  .in::-webkit-outer-spin-button,
+  position: absolute;
+  height: fit-content;
+  width: max-content;
+  justify-content: center;
+  justify-self: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #3b3b3b;
+}
+.app-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 90%;
+  width: fit-content;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  border-radius: 24px;
+  background-color: #cacaca;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.in::-webkit-outer-spin-button,
 .in::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+.in[type="number"] {
+  -moz-appearance: textfield;
+}
+.in {
+  position: relative;
+  display: flexbox;
+  height: 28px;
+  margin-right: 4px;
+  border: none;
+  border-radius: 20px;
 
-.in[type=number] {
-  -moz-appearance: textfield;  
+  font-family: "Courier New", Courier, monospace;
+  color: indigo;
+  text-align: center;
+  width: 230px;
 }
-  .in{
-    position: relative;
-    display: flexbox;
-    height:  28px;
-    margin-right: 4px;
-    border: none;
-    border-radius:20px ;
-    
-    font-family: 'Courier New', Courier, monospace;
-    color: indigo;
-    text-align: center;
-    width: 230px;
-    }  
-    .btn{
-        border-radius:20px ;
-        height:  34px;
-        background-color: #cacaca;
-        font-family: 'Courier New', Courier, monospace;
-    }
-    .btn:hover{
-        background-color: #e4e3e3;
-    }
-.pan{
-    border: 2px solid black;
-    border-radius:20px ;
+.btn {
+  border-radius: 20px;
+  height: 34px;
+  background-color: #cacaca;
+  font-family: "Courier New", Courier, monospace;
 }
-  .app-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    height: 90%;
-    width: fit-content;
-    margin-top: 50px;
-    margin-bottom: 50px;
-    border-radius: 24px;
-    background-color: #cacaca;
-    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-  }
-.container{
-    background-color: #FFFFF3;
-    border: solid 1px blue;
-    width: 100%;
+.btn:hover {
+  background-color: #e4e3e3;
 }
-.block{
-    margin-top: 20px;
-    background-color: darkcyan;
+.pan {
+  border: 2px solid black;
+  border-radius: 20px;
 }
-.canvas{
-    background-color: #ffffff;
-    border-top: 8px solid  darkcyan;
-    border-bottom: 4px solid  darkcyan;
+.canvas {
+  background-color: #ffffff;
+  border-top: 8px solid darkcyan;
+  border-bottom: 4px solid darkcyan;
 }
-.line{
-    z-index: -2;
-    stroke:  rgb(89, 89, 89);
-    stroke-dashoffset: 0.1px;
-    stroke-width: 2px;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    border: 2px solid black;
-    cursor: crosshair;
-
-    /* marker-end: url("arrowhead.html"); */
+.line {
+  z-index: -2;
+  stroke: rgb(89, 89, 89);
+  stroke-dashoffset: 0.1px;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  border: 2px solid black;
+  cursor: crosshair;
 }
-.line:hover{
-    stroke:  rgb(218, 12, 12);
+.line:hover {
+  stroke: rgb(218, 12, 12);
 }
-.arrow{
-    z-index: -1;
-    fill: rgb(214, 218, 7);
-    cursor: crosshair;
-
+.arrow {
+  z-index: -1;
+  fill: rgb(0, 92, 104);
+  cursor: crosshair;
 }
-.m:hover{
-    fill:  rgb(218, 12, 12);
+.m:hover {
+  fill: rgb(134, 5, 5);
 }
-.q{
-    stroke-width: 1px;
-    stroke: rgb(0, 0, 0);
-    cursor: crosshair;
-
+.nodeText {
+  fill: rgba(255, 255, 255, 0.912);
+  font-weight: bold;
+  font-family: "Segoe UI";
+  cursor: crosshair;
+  user-select: none;
 }
-.nodeText{
-    fill:rgba(255, 255, 255, 0.912);
-    font-weight: bold;
-    font-family: 'Segoe UI';
-    cursor: crosshair;
-    user-select:none;
+.gainText {
+  fill: rgba(156, 0, 0, 0.912);
+  font-weight: bold;
+  font-family: "Segoe UI";
+  cursor: crosshair;
+  user-select: none;
 }
-.gainText{
-    fill:rgba(156, 0, 0, 0.912);
-    font-weight: bold;
-    font-family: 'Segoe UI';
-    cursor: crosshair;
-    user-select: none;
+.node {
+  stroke-width: 2px;
+  fill: rgb(156, 0, 0);
+  stroke: rgb(0, 0, 0);
+  cursor: crosshair;
 }
-.gainText:hover{
-    font-style: italic;
-}
-.nodeText:hover{
-    font-style: italic;
-}
-.m{
-    stroke-width: 1px;
-    stroke: rgb(0, 0, 0);
-    cursor: crosshair;
+.node:hover{
+    fill: rgb(43, 2, 2);
 }
 
-#res{
-    font-size: xx-large;
-    text-align:center;
+#res {
+  font-size: xx-large;
+  text-align: center;
 }

@@ -8,7 +8,6 @@
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
     />
-    <script src="priority-queue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link
@@ -63,15 +62,15 @@
             fill="transparent"
           />
           <polygon
+            class="arrow"
             *ngFor="let link of links"
             stroke="black"
             fill="grey"
             [attr.points]="evaluate_arrow(link)"
           />
           <circle
-            class="m"
+            class="node"
             *ngFor="let m of nodes"
-            [attr.fill]="'blue'"
             [attr.cx]="evaluate_x(m)"
             [attr.cy]="axis_height"
             r="20"

@@ -328,7 +328,7 @@ export class AppComponent {
         res += this.NODEWIDTH / 2;
       }
     }
-    if(this.nodes.length < 2){
+    if(node.X==0){
       res-=this.NODEWIDTH/2;
     }
     return res +  (window.innerWidth / (this.nodes.length+1));
