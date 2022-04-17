@@ -467,7 +467,7 @@ export class AppComponent {
       return false;
     }
     for (let index = 0; index < this.nodes.length; index++) {
-      if(this.nodes[index].In.length==0&&this.startNode!=this.nodes[index]){
+      if(this.nodes[index].In.length==0&&this.startNode!=this.nodes[index]&&this.nodes[index].Out.length!=0){
         window.alert("there can't be more than one node acting as input \n(such systems aren't supported yet)");
         return false;
       } 
@@ -476,7 +476,6 @@ export class AppComponent {
   }
   solve(){
     if(!this.canSolve()){
-      this.result="make sure to pick both: starting node & end node";
     }
     else{
       this.result="solved !";
