@@ -445,7 +445,7 @@ export class AppComponent {
   }
   selectStart(){
     if(this.MODE==mode.selectingNode&&this.lastSelectednode!=this.endNode){
-      if(this.lastLeftnode.In.length>0){
+      if(this.lastSelectednode.In.length>0){
         window.alert("the selected node can't take the first node role");
         return;
       }
@@ -454,7 +454,7 @@ export class AppComponent {
   }
   selectEnd(){
     if(this.MODE==mode.selectingNode&&this.lastSelectednode!=this.startNode){
-      if(this.lastLeftnode.Out.length>0){
+      if(this.lastSelectednode.Out.length>0){
         window.alert("the selected node can't take the input node role");
         return;
       }
@@ -472,10 +472,15 @@ export class AppComponent {
         return false;
       } 
     }
+    if(!(this.startNode.In.length==0&&this.endNode.Out.length==0)){
+      window.alert("please make sure to pick applicable input & output nodes");
+      return false;
+    }
     return true;
   }
   solve(){
     if(!this.canSolve()){
+
     }
     else{
       this.result="solved !";
