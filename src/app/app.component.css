@@ -25,6 +25,7 @@
   border-radius: 20px;
   background-color: #cacaca;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
 }
 
 .in::-webkit-outer-spin-button,
@@ -62,7 +63,8 @@
   background-color: #adadad;
 }
 #solve:hover{
-  background-color: #09aaa2;
+  background-color: darkcyan;
+  color: white;
 }
 .pan {
   border: 2px solid black;
@@ -114,7 +116,7 @@
   cursor: crosshair;
 }
 .node:hover{
-    fill: rgb(43, 2, 2);
+    fill: rgb(182, 56, 56);
 }
 
 #res {

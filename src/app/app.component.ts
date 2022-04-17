@@ -406,7 +406,7 @@ export class AppComponent {
       return("rgb(20, 0, 120)");
     }
     if(this.MODE==mode.selectingNode&&n==this.lastSelectednode){
-      return("rgb(70, 0, 20)");
+      return("rgb(182, 56, 56)");
     }
     return("rgb(156, 0, 0)");
   }
