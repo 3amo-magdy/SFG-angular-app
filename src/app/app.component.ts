@@ -328,7 +328,10 @@ export class AppComponent {
         res += this.NODEWIDTH / 2;
       }
     }
-    return res +  (window.innerWidth / (2*(this.nodes.length+1)));
+    if(this.nodes.length < 2){
+      res-=this.NODEWIDTH/2;
+    }
+    return res +  (window.innerWidth / (this.nodes.length+1));
   }
   evaluate_curve_midPoint_y(l: link) {
     let x0 = this.evaluate_x(l.from);
