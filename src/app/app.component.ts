@@ -169,6 +169,12 @@ export class AppComponent {
         this.removefromarr(this.links, v);
         break;
     }
+    this.MODE = mode.linking;
+    this.selected = NULL;
+    this.lastLeftnode = NULL;
+    this.lastSelectednode = NULL;
+    (this.Egain.nativeElement as HTMLInputElement).value = "";
+    (this.Ename.nativeElement as HTMLInputElement).value = "";
     this.update_axis();
   }
   private leveldown(l :link){
