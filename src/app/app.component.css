@@ -22,7 +22,7 @@
   width: fit-content;
   margin-top: 50px;
   margin-bottom: 50px;
-  border-radius: 24px;
+  border-radius: 20px;
   background-color: #cacaca;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
@@ -63,7 +63,7 @@
 }
 .canvas {
   background-color: #ffffff;
-  border-top: 8px solid darkcyan;
+  border-top: 4px solid darkcyan;
   border-bottom: 4px solid darkcyan;
 }
 .line {
