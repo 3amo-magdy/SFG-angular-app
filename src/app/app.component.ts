@@ -417,13 +417,23 @@ export class AppComponent {
     return("rgb(156, 0, 0)");
   }
   editGain(e: any) {
-    if(isNaN(Number(e.target.value))){
-      e.target.value = "";
-      return;
+    if(this.MODE==mode.selectingLink){
+      if(isNaN(Number(e.target.value))){
+        e.target.value = "";
+        return;
+      }
+      (this.selected as link).gain = Number(e.target.value);
     }
-    (this.selected as link).gain = Number(e.target.value);
+    else{
+      e.target.value = "";
+      return
+    }
   }
   editName(e: any) {
+    if(this.MODE!=mode.selectingNode){
+      e.target.value = "";
+      return
+    }
     let flag = false;
     this.nodes.forEach(n => {
       if(n.name===e.target.value){
