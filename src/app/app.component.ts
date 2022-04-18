@@ -293,7 +293,7 @@ export class AppComponent {
   }
   KeyDown(e: KeyboardEvent) {
     let keyName = e.key;
-    if (this.selected != NULL && e.key === "Delete" || e.key === "D" || e.key === "d") {
+    if (this.selected != NULL && e.key === "Delete") {
       this.delete(this.selected);
     }
     if (e.key === "n" || e.key === "N") {
