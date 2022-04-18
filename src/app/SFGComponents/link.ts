@@ -12,7 +12,7 @@ export class link extends IViewable{
         super("");
         this.from=f;
         this.to=t;
-        this.gain=0;
+        this.gain=1;
         this.level = level;
     }
 }
