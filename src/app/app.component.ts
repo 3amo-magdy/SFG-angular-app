@@ -417,7 +417,7 @@ export class AppComponent {
     return("rgb(156, 0, 0)");
   }
   editGain(e: any) {
-    if(this.MODE==mode.selectingLink){
+    if(this.selected instanceof link){
       if(isNaN(Number(e.target.value))){
         e.target.value = "";
         return;
@@ -430,7 +430,7 @@ export class AppComponent {
     }
   }
   editName(e: any) {
-    if(this.MODE!=mode.selectingNode){
+    if(!(this.selected instanceof node)){
       e.target.value = "";
       return
     }
