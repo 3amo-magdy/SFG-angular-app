@@ -120,8 +120,14 @@
 }
 
 #res {
-  font-size: xx-large;
+  align-self: flex-start;
+
+  padding-left:2%;
+  padding-right: 2%;
+  padding-top: 2px;
+  font-size: large;
+  font-weight: 600;
   text-align: left;
-  font-family: Impact;
+  font-family: Helvetica;
 
 }
