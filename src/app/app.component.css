@@ -85,12 +85,11 @@
 .sep{
   background-color: #00072e;
   height: 12px;
-  width: calc(80vw + 24px);
+  width: calc(80vw + 32px);
 }
 .canvas {
-  background-color: #ffffff;
+  background-color: #dadada;
   margin-top: 4px;
-
 }
 .co{
   scale: 98%;
