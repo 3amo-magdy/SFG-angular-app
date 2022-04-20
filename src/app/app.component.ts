@@ -27,6 +27,8 @@ export class AppComponent {
   win!: Window;
   extraWidth:number;
   extraHeight:number;
+  @ViewChild("co")
+  Eco!: ElementRef;
   @ViewChild("canvas")
   Ecanvas!: ElementRef;
   canvas!: SVGElement;
@@ -67,9 +69,12 @@ export class AppComponent {
     document.addEventListener("keydown", this.KeyDown.bind(this), false);
     document.addEventListener("resize", this.update_axis.bind(this), false);
     document.addEventListener("scroll", this.update_axis.bind(this), false);
-
-    // document.addEventListener("mouseenter", this.update_axis.bind(this), false);
     document.addEventListener("mousedown", this.update_axis.bind(this), false);
+
+    // document.getElementById("co")!.style.maxWidth=`${innerWidth*0.8}`;
+    // (document.getElementsByClassName("co")[0] as HTMLDivElement).style.maxWidth=`${900*0.8}`;
+    (this.Eco.nativeElement as HTMLDivElement).style.setProperty('max-width',""+(900));
+    // document.addEventListener("mouseenter", this.update_axis.bind(this), false);
     // document.addEventListener("mouseleave", this.update_axis.bind(this), false);
 
     this.canvas = this.Ecanvas.nativeElement as SVGElement;
@@ -335,23 +340,21 @@ export class AppComponent {
   }
   evaluate_x(node: node): number {
     var res = 0;
-    var n = (window.innerWidth) / (this.nodes.length+1);
+    var n = ((80/100*window.innerWidth)) / (this.nodes.length+1);
     if(n<2 * this.NODEWIDTH){
       n = 2 * this.NODEWIDTH;
-      this.extraWidth = n*(this.nodes.length+1)-(window.innerWidth);
+      this.extraWidth = n*(this.nodes.length+1)-((80/100*window.innerWidth))-this.NODEWIDTH;
     }
     if (!(this.nodes.length == 0)) {
       res = node.X * n;
-      if (this.nodes.length >= 2 && this.nodes[this.nodes.length - 1] == node) {
-        res -= this.NODEWIDTH / 2;
-      } else if (this.nodes[0] == node) {
+    if (this.nodes[0] == node) {
         res += this.NODEWIDTH / 2;
       }
     }
     if(node.X==0){
       res-=this.NODEWIDTH/2;
     }
-    return res +  (window.innerWidth / (this.nodes.length+1));
+    return res +  ((80/100*window.innerWidth) / (this.nodes.length+1));
   }
   evaluate_curve_midPoint_y(l: link) {
     let x0 = this.evaluate_x(l.from);
@@ -451,7 +454,7 @@ export class AppComponent {
     
   }
   evaluateCanvasWidth():number{
-    return this.win.innerWidth -this.getOffset().left + this.extraWidth;
+    return 0.8*window.innerWidth+ this.extraWidth;
   }
   evaluateCanvasHeight():number{
     return this.axis_height*2;
@@ -502,4 +505,5 @@ export class AppComponent {
       this.result="solved !";
     }
   }
+  
 }
