@@ -7,6 +7,8 @@
   left: 0;
   right: 0;
   bottom: 0;
+  max-width: 80%;
+  left: 10%;
   background-color: #3b3b3b;
 }
 .app-container {
@@ -68,14 +70,20 @@
   border: 2px solid black;
   border-radius: 20px;
 }
+.sep{
+  background-color: darkcyan;
+  height: 4px;
+  width: calc(80vw + 24px);
+}
 .canvas {
   background-color: #ffffff;
-  border-top: 4px solid darkcyan;
-  border-bottom: 4px solid darkcyan;
+  margin-top: 12px;
 }
 .co{
   max-width:calc(80vw + 12px);
+  max-height: calc(50vh + 31px);
   overflow: scroll;
+  margin-left: 12px;
 }
 .line {
   z-index: -2;
@@ -122,13 +130,15 @@
 }
 
 #res {
+  background-color: rgba(0, 139, 139, 0.116);
+
   align-self: flex-start;
   width: 100%;
   max-height: 200px;
   overflow: scroll;
   padding-left:2%;
   padding-right: 2%;
-  padding-top: 2px;
+  padding-top: 10px;
   font-size: large;
   font-weight: 600;
   text-align: left;
