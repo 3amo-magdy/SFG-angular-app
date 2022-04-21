@@ -5,6 +5,7 @@ import { mode } from "./SFGComponents/GUI/mode";
 import { node } from "./SFGComponents/node";
 import { IdGenerator } from "./SFGComponents/IdGenerator";
 import { nonTouchingChecker } from "./SFGComponents/Solver/nonTouchingChecker";
+import { Solver } from "./SFGComponents/Solver/Solver";
 export const NULL:node = new node("",0,0,"");
 
 @Component({
@@ -499,12 +500,16 @@ export class AppComponent {
     return true;
   }
   solve(){
-    let x:nonTouchingChecker= new nonTouchingChecker()
-    x.demoTouching()
+   // let x:nonTouchingChecker= new nonTouchingChecker()
+   // x.demoTouching()
+   let x : Solver = new Solver();
+    x.getPaths(this.nodes,this.startNode,this.endNode)
     if(!this.canSolve()){
 
     }
     else{
+    
+
       this.result="solved !";
     }
   }
