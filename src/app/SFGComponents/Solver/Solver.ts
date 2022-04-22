@@ -7,6 +7,7 @@ export class Solver implements ISolver{
     path: string[] = []
     loop: string[] = []
     
+    
     isVisited: boolean[] = [];
     forwardPaths!: pathInfo[];
     loops!:pathInfo[];
@@ -34,8 +35,18 @@ export class Solver implements ISolver{
         let u = nodeMap.get(src.name);
         let v = nodeMap.get(dest.name);
         this.DFS(nodes, u!, v!);
+
+        for(let i=0 ; i<this.loops.length;i++){
+            for(let j=0 ; j<this.loops.length;j++){
+                if(i!=j && JSON.stringify(this.loops[i].path)==JSON.stringify(this.loops[j].path)){
+                    this.loops.splice(i,1)
+                }
+            }
+        }
+    
         console.log("weeeeeee ", this.forwardPaths)
         console.log("weeeeeee ll loops b2a :)) ", this.loops)
+        
     }    
 
     DFS(nodes: node[], u: number, dest: number) {
@@ -56,7 +67,7 @@ export class Solver implements ISolver{
                 let index = nodes[u].OutLinks[i];
                 if(this.isVisited[nodeMap.get(index.to.name)!]  == false) { 
                     this.DFS(nodes,nodeMap.get(nodes[u].Out[i].name)!, dest);
-                    
+
                 }else{                                                  //finding a node visited before means loop :))
                                                                         // msh btsht8l s7 f al touching 
                     console.log("There is a loop ends at ",nodes[u].Out[i]);
@@ -87,17 +98,19 @@ export class Solver implements ISolver{
                         }
                     }
 
-                    console.log("My loop is >>> ",this.loop);
-                    var newLoop = new pathInfo();
-                    var tempyy = JSON.parse(JSON.stringify(this.loop));
-                    
-                    newLoop.path = tempyy;
-                    newLoop.gain = this.getGain(nodes, newLoop) 
-                    console.log(newLoop)
-
-                    this.loops.push(newLoop);
+                    console.log("My loop is >>> ",this.loop);        // x2 x1 x2 lw x1 dh a2l mn x2 yb2a 8lt "map key"
+                    if(nodeMap.get(this.loop[this.loop.length-2])! >= nodeMap.get(this.loop[this.loop.length-1])! ){
+                        var newLoop = new pathInfo();
+                        var tempyy = JSON.parse(JSON.stringify(this.loop));
+                        
+                        newLoop.path = tempyy;
+                        newLoop.gain = this.getGain(nodes, newLoop) 
+                        console.log(newLoop)
+    
+                        this.loops.push(newLoop);
+                    }
+                   
                     this.loop=[]
-
                     this.path.pop();
                 }
             }
