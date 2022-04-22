@@ -48,8 +48,7 @@ export class Solver implements ISolver{
             this.forwardPaths.push(newPath);
             this.path.pop();
             
-        }
-        else {
+        } else {
             this.path.push(this.getByValue(u)!);
             this.isVisited[u] = true;
             
@@ -57,26 +56,32 @@ export class Solver implements ISolver{
                 let index = nodes[u].OutLinks[i];
                 if(this.isVisited[nodeMap.get(index.to.name)!]  == false) { 
                     this.DFS(nodes,nodeMap.get(nodes[u].Out[i].name)!, dest);
+                    
                 }else{                                                  //finding a node visited before means loop :))
                                                                         // msh btsht8l s7 f al touching 
                     console.log("There is a loop ends at ",nodes[u].Out[i]);
                     this.path.push(nodes[u].Out[i].name)
 
-                    let pathCopy = this.path;
-                    for(let i=0 ; i<pathCopy.length;i++){
-                        // ashel ay 7aga mn al out nodes m3ada al node aly rg3a ll loop
+                    let pathCopy = JSON.parse(JSON.stringify(this.path));
+                    for(let x=0 ; x<nodes[u].Out.length;x++){   // x1 x2 x3 x4 x1
+                        if(pathCopy.includes(nodes[u].Out[x].name) && (nodes[u].Out[x].name!= nodes[u].Out[i].name) && 
+                            this.isVisited[nodeMap.get(nodes[u].Out[x].name)!]==false){
+                                let INDEX = pathCopy.indexOf(nodes[u].Out[x].name)
+                                pathCopy.splice(INDEX,1)
+                        }
                     }
-                    console.log("When detect a loop the path is",this.path)
-                    for(let j=0 ; j<this.path.length;j++){
+                    
+                    console.log(this.path)
+                    console.log("When detect a loop the path is",pathCopy)
+                    for(let j=0 ; j<pathCopy.length;j++){
                         console.log("b7awl ala2y albdaya bs lsa mgbthash")
                        // console.log(nodes[u].Out[i])
-                        if(this.path[j]==nodes[u].Out[i].name){
+                        if(pathCopy[j]==nodes[u].Out[i].name){
                             console.log("gbtha")
-                            console.log(this.path[j])
+                            console.log(pathCopy[j])
                             let index =0
-                            while(j<this.path.length){
-                                this.loop[index++]=this.path[j++];
-                              
+                            while(j<pathCopy.length){
+                                this.loop[index++]=pathCopy[j++];
                             }
                             break;
                         }
@@ -93,6 +98,7 @@ export class Solver implements ISolver{
                     this.loops.push(newLoop);
                     this.loop=[]
 
+                    this.path.pop();
                 }
             }
         this.path.pop();
