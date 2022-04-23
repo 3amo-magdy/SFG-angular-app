@@ -500,42 +500,73 @@ export class AppComponent {
     return true;
   }
   solve(){
-   let x : Solver = new Solver();
-    x.getPaths(this.nodes,this.startNode,this.endNode)
-    var allPaths:pathInfo[]=x.getPathsList()
-    var allLoops:pathInfo[]=x.getLoopsList()
-
-    console.log("all paths >>> "+allPaths);
-    console.log("all loops >>> "+allLoops);
-
-    var c :nonTouchingChecker = new nonTouchingChecker();
-    c.findNonTouchingLoops(this.nodes,allLoops);
-
-    var nonTouchingLoops:pathInfo[][][]=c.getNonTouchingLoopList()
-    console.log("nonTouching >>>>>>>")
-    for(let i=0;i<nonTouchingLoops.length;i++){
-        console.log("non touching " +(i+2)+ "loops are: " )
-        for(var y of nonTouchingLoops[i]){
-            console.log("groupOfLoopsStart");
-            
-            for (var l of y){
-                for(var n of l.path){
-                    console.log(n)
-                }
-                console.log("+");
-            }
-            console.log("groupOfLoopsEnd")
-        }
-    }
-    
-        
-
-
     if(!this.canSolve()){
-
+        console.log("7ot diagram 3dl yasta");
     }
     else{
+      let x : Solver = new Solver();
+      x.getPaths(this.nodes,this.startNode,this.endNode)
+      var allPaths:pathInfo[]=x.getPathsList()
+      var allLoops:pathInfo[]=x.getLoopsList()
+  
+      console.log("all paths >>> "+allPaths);
+      console.log("all loops >>> "+allLoops);
+  
+      var c :nonTouchingChecker = new nonTouchingChecker();
+      var nonTouchingLoops:pathInfo[][][]= c.findNonTouchingLoops(this.nodes,allLoops);
+      var bigDelta=1;
+      for(let i=0;i<nonTouchingLoops.length;i++){
+        for(let j=0;j<nonTouchingLoops[i].length;j++){
+          var temp=1;
+          for(var l of nonTouchingLoops[i][j]){
+            temp*=l.gain
+          }
+          bigDelta=(i%2===0?bigDelta-temp:bigDelta+temp)
+        }
+      }
+  
+      //print non touching
+      console.log("nonTouching >>>>>>>")
+      for(let i=0;i<nonTouchingLoops.length;i++){
+          console.log("non touching " +(i+2)+ "loops are: " )
+          for(var y of nonTouchingLoops[i]){
+              console.log("groupOfLoopsStart");
+              
+              for (var l of y){
+                  for(var n of l.path){
+                      console.log(n)
+                  }
+                  console.log("+");
+              }
+              console.log("groupOfLoopsEnd")
+          }
+      }
+      
+  
     
+      
+      var numerator=0;
+      for(let i=0;i<allPaths.length;i++){
+        var loopsAfterRemovingPath=x.getLoopsWithoutPath(allLoops,allPaths[i]) //now we have the loops excluding that path
+        var nonTouchingLoopsAfterRemovingPath=c.findNonTouchingLoops(this.nodes,loopsAfterRemovingPath)
+        var smallDelta=1;
+        for(let i=0;i<nonTouchingLoopsAfterRemovingPath.length;i++){
+          for(let j=0;j<nonTouchingLoopsAfterRemovingPath[i].length;j++){
+            var temp=1;
+            for(var l of nonTouchingLoopsAfterRemovingPath[i][j]){
+              temp*=l.gain
+            }
+            smallDelta=(i%2===0?smallDelta-temp:smallDelta+temp)
+          }
+        }
+        numerator+=allPaths[i].gain*smallDelta;
+        smallDelta=1    
+      }
+          
+  
+  
+      var overall= numerator/bigDelta
+      console.log("SOLUTION >> OVERALL GAIN = " + overall)
 
       this.result="solved !";
     }

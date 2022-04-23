@@ -142,6 +142,27 @@ export class Solver implements ISolver{
         }
         return gain;
     }
+
+
+
+    getLoopsWithoutPath(loops:pathInfo[] , path:pathInfo):pathInfo[]{
+        var modifiedLoops:pathInfo[]=[]
+        var map = new Map<string,boolean>();
+        for(var n of path.path){
+            map.set(n,true)
+        }
+        for(var l of loops){
+            var valid:Boolean=true
+            for(var n of l.path){
+                if(map.has(n)) valid=false 
+            }
+            if(valid) modifiedLoops.push(l)
+        }
+
+        return modifiedLoops;
+    }
+
+
 }
 
 export class pathInfo {

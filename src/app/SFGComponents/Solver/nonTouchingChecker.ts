@@ -59,12 +59,10 @@ export class nonTouchingChecker{
         return x.toString(2).split('0').join("").length
     }
 
-    getNonTouchingLoopList():pathInfo[][][]{
-        return this.nonTouchingLoops
-    }
 
 
-    findNonTouchingLoops(nodes:node[],loops:pathInfo[]){
+
+    findNonTouchingLoops(nodes:node[],loops:pathInfo[]):pathInfo[][][]{
         this.nodeMap=this.createNodeMap(nodes)
         this.loopsNum=loops.length
         let boundMask=0;
@@ -98,7 +96,7 @@ export class nonTouchingChecker{
                 loopsChecking=[]
             }
         }
-
+        return this.nonTouchingLoops
     }
 
 
