@@ -151,12 +151,22 @@ export class Solver implements ISolver{
         for(var n of path.path){
             map.set(n,true)
         }
+        console.log(map)
+        
         for(var l of loops){
             var valid:Boolean=true
+            l.print()
             for(var n of l.path){
-                if(map.has(n)) valid=false 
+                console.log("checking "+n)
+                console.log(map.get(n))
+                if(map.get(n)===true){
+                    console.log("found duplicates, ignoring the loop")
+                    valid=false
+                    break;
+                }
             }
-            if(valid) modifiedLoops.push(l)
+            if(valid===true) modifiedLoops.push(l)
+            console.log(modifiedLoops)
         }
 
         return modifiedLoops;
@@ -172,5 +182,9 @@ export class pathInfo {
     constructor() {
         this.path = [];
         this.gain = 1; 
+    }
+
+    print(){
+        console.log(this.path + " gain: " + this.gain);
     }
 }
