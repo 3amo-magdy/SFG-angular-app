@@ -1,54 +1,54 @@
 import { node } from "../node";
-import { ISolver } from "./ISolver";
+import { pathInfo } from "./Solver";
 
 
 
 export class nonTouchingChecker{
     
-    nonTouching_i_loops:node[][][][]=[];
+    // nonTouching_i_loops:node[][][][]=[];    
     loopsMap!: Map<number, number[]>; //maps loop number to the node numbers
     nodeMap!: Map<node, number>; //maps node number to the node itself
     loopsNum:number=0;
     nodesNum:number=0;
 
+    nonTouchingLoops:pathInfo[][][]=[];
+    //[0]>>> [[] ]
+
+    // demoTouching(){
+    //     var x1:node = new node("0",0,0,"x1");
+    //     var x2:node = new node("0",0,0,"x2");
+    //     var x3:node = new node("0",0,0,"x3");
+    //     var x4:node = new node("0",0,0,"x4");
+    //     var x5:node = new node("0",0,0,"x5");
+    //     var x6:node = new node("0",0,0,"x6");
+    //     var x7:node = new node("0",0,0,"x7");
+    //     var x8:node = new node("0",0,0,"x8");
+    //     var x9:node = new node("0",0,0,"x9");
+    //     var x10:node =new node("0",0,0,"x10");
+
+
+    //     var allNodes:node[]=[x1,x2,x3,x4,x5,x6,x7,x8,x9,x10]
+
+    //     var loop1:node[]=[x1,x2,x3]
+    //     var loop2:node[]=[x3,x4,x7]
+    //     var loop3:node[]=[x4,x5,x6]
+    //     var loop4:node[]=[x8,x9,x10]
+
+    //     var loops:node[][]=[loop1,loop2,loop3,loop4 ]
+    //     this.findNonTouchingLoops(allNodes,loops);
+
+    // }
 
 
 
-    demoTouching(){
-        var x1:node = new node("0",0,0,"x1");
-        var x2:node = new node("0",0,0,"x2");
-        var x3:node = new node("0",0,0,"x3");
-        var x4:node = new node("0",0,0,"x4");
-        var x5:node = new node("0",0,0,"x5");
-        var x6:node = new node("0",0,0,"x6");
-        var x7:node = new node("0",0,0,"x7");
-        var x8:node = new node("0",0,0,"x8");
-        var x9:node = new node("0",0,0,"x9");
-        var x10:node =new node("0",0,0,"x10");
 
-
-        var allNodes:node[]=[x1,x2,x3,x4,x5,x6,x7,x8,x9,x10]
-
-        var loop1:node[]=[x1,x2,x3]
-        var loop2:node[]=[x3,x4,x7]
-        var loop3:node[]=[x4,x5,x6]
-        var loop4:node[]=[x8,x9,x10]
-
-        var loops:node[][]=[loop1,loop2,loop3,loop4 ]
-        this.findNonTouchingLoops(allNodes,loops);
-
-    }
-
-
-
-
-    isNonTouching(loops:node[][] ):boolean{
-        let hashmap= new Map<number,boolean>();
+    isNonTouching(loops:pathInfo[] ):boolean{
+        let hashmap= new Map<string,boolean>();
         console.log("checking loops : " + loops)
         for(var loop1 of loops){
-            for (var i of loop1){
-                if(hashmap.has((this.nodeMap.get(i))!)===true) return false;
-                else hashmap.set(this.nodeMap.get(i)!,true);
+            for (var i=0;i<loop1.path.length-1;i++){ //ignore last node
+                if(hashmap.has(loop1.path[i])===true) return false;
+                else hashmap.set(loop1.path[i],true);
             }
         }        
         return true;
@@ -59,23 +59,25 @@ export class nonTouchingChecker{
         return x.toString(2).split('0').join("").length
     }
 
+    getNonTouchingLoopList():pathInfo[][][]{
+        return this.nonTouchingLoops
+    }
 
 
-    findNonTouchingLoops(nodes:node[],loops:node[][]){
+    findNonTouchingLoops(nodes:node[],loops:pathInfo[]){
         this.nodeMap=this.createNodeMap(nodes)
-        this.loopsMap=this.createLoopsMap(loops)
+        this.loopsNum=loops.length
         let boundMask=0;
         let choosingMask=0
         console.log(this.nodeMap)
         for(let i=0;i<this.loopsNum-1;i++){
-            this.nonTouching_i_loops[i]=[]
-            console.log('a')
+            this.nonTouchingLoops[i]=[]
         }
 
         boundMask=Math.pow(2,this.loopsNum)-1;
         for(choosingMask=0;choosingMask<=boundMask;choosingMask++){
             if(this.getNumberOfOnes(choosingMask)>1) {
-                var loopsChecking:node[][]=[]
+                var loopsChecking:pathInfo[]=[]
                 var str:string=""
                 for(let i = 0;i<this.getNumberOfOnes(boundMask);i++)str=str+'0' //str contains 000000                
                 //000000
@@ -92,45 +94,11 @@ export class nonTouchingChecker{
                 console.log(choosingMask.toString(2)+" ")
                 console.log(loopsChecking)
                 if(this.isNonTouching(loopsChecking))
-                    this.nonTouching_i_loops[this.getNumberOfOnes(choosingMask)-2].push(loopsChecking)
+                    this.nonTouchingLoops[this.getNumberOfOnes(choosingMask)-2].push(loopsChecking)
                 loopsChecking=[]
             }
         }
 
-
-        console.log("result>>>>>>>>>>>")
-        for(let i=0;i<this.loopsNum-1;i++){
-            console.log("non touching " +(i+2)+ "loops are: " )
-            for(var x of this.nonTouching_i_loops[i]){
-                console.log("groupOfLoopsStart");
-                
-                for (var l of x){
-                    console.log("loopStart");
-                    for(var n of l){
-                        console.log(n.name)
-                    }
-                    console.log("loopEnd");
-                }
-                console.log("groupOfLoopsEnd")
-            }
-        }
-        
-
-    }
-
-    /**
-     * creates map to map from loop number as L1 to loop nodes numbers
-     * @param loops 
-     * @returns 
-     */
-    createLoopsMap(loops:node[][]):Map<number,number[]>{
-        var map= new Map<number,number[]>()
-        let i = 0;
-        for(; i<loops.length;i++){
-            // map.set(i,loops[i])
-        }
-        this.loopsNum=i;
-        return map;
     }
 
 

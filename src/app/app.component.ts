@@ -5,7 +5,7 @@ import { mode } from "./SFGComponents/GUI/mode";
 import { node } from "./SFGComponents/node";
 import { IdGenerator } from "./SFGComponents/IdGenerator";
 import { nonTouchingChecker } from "./SFGComponents/Solver/nonTouchingChecker";
-import { Solver } from "./SFGComponents/Solver/Solver";
+import { pathInfo, Solver } from "./SFGComponents/Solver/Solver";
 export const NULL:node = new node("",0,0,"");
 
 @Component({
@@ -500,10 +500,37 @@ export class AppComponent {
     return true;
   }
   solve(){
-   // let x:nonTouchingChecker= new nonTouchingChecker()
-   // x.demoTouching()
    let x : Solver = new Solver();
     x.getPaths(this.nodes,this.startNode,this.endNode)
+    var allPaths:pathInfo[]=x.getPathsList()
+    var allLoops:pathInfo[]=x.getLoopsList()
+
+    console.log("all paths >>> "+allPaths);
+    console.log("all loops >>> "+allLoops);
+
+    var c :nonTouchingChecker = new nonTouchingChecker();
+    c.findNonTouchingLoops(this.nodes,allLoops);
+
+    var nonTouchingLoops:pathInfo[][][]=c.getNonTouchingLoopList()
+    console.log("nonTouching >>>>>>>")
+    for(let i=0;i<nonTouchingLoops.length;i++){
+        console.log("non touching " +(i+2)+ "loops are: " )
+        for(var y of nonTouchingLoops[i]){
+            console.log("groupOfLoopsStart");
+            
+            for (var l of y){
+                for(var n of l.path){
+                    console.log(n)
+                }
+                console.log("+");
+            }
+            console.log("groupOfLoopsEnd")
+        }
+    }
+    
+        
+
+
     if(!this.canSolve()){
 
     }

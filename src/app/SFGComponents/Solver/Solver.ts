@@ -49,6 +49,15 @@ export class Solver implements ISolver{
         
     }    
 
+    getPathsList():pathInfo[]{
+        return this.forwardPaths;
+    }
+
+    getLoopsList():pathInfo[]{
+        return this.loops
+    }
+
+
     DFS(nodes: node[], u: number, dest: number) {
         if(u == dest) {
             var newPath = new pathInfo();
@@ -135,7 +144,7 @@ export class Solver implements ISolver{
     }
 }
 
-class pathInfo {
+export class pathInfo {
     path: string[];
     gain: number;
     
