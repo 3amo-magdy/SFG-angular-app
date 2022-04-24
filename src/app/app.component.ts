@@ -518,6 +518,11 @@ export class AppComponent {
       
       var bigDelta=1;
       console.log("getting big delta")
+
+      for(let i=0;i<allLoops.length;i++){
+        bigDelta-=allLoops[i].gain
+      }
+
       for(let i=0;i<nonTouchingLoops.length;i++){
         for(let j=0;j<nonTouchingLoops[i].length;j++){
 
@@ -526,7 +531,7 @@ export class AppComponent {
             l.print()
             temp*=l.gain
           }
-          bigDelta=(i%2===0? (bigDelta-temp):(bigDelta+temp))
+          bigDelta=(i%2===0? (bigDelta+temp):(bigDelta-temp))
           console.log(bigDelta)
         }
       }
@@ -560,7 +565,9 @@ export class AppComponent {
         console.log("considering path delta ")
         allPaths[i].print()
         console.log("considered loops")
-
+        for(let i=0;i<loopsAfterRemovingPath.length;i++){
+            smallDelta-=loopsAfterRemovingPath[i].gain
+        }
         console.log("small delta before: "+smallDelta)
         for(let i=0;i<nonTouchingLoopsAfterRemovingPath.length;i++){
           for(let j=0;j<nonTouchingLoopsAfterRemovingPath[i].length;j++){
@@ -569,7 +576,7 @@ export class AppComponent {
               l.print()
               temp2*=l.gain
             }
-            smallDelta=(i%2===0?smallDelta-temp2:smallDelta+temp2)
+            smallDelta=(i%2===0?smallDelta+temp2:smallDelta-temp2)
             console.log(smallDelta)
           }
         }
