@@ -55,7 +55,6 @@
       </button>
     </div>
       <div class="sep0"></div>
-
       <div #co class="co" id="co">
         <svg
           #canvas
@@ -125,31 +124,33 @@
       </div>
       <div class="sep"></div>
       <div #res id="res">
-        <u>[1] Forward Paths</u>
-        <div>
-          ...
+        <div>[1] Forward Paths</div>
+        <div *ngFor="let path of forward_paths">
+          {{path}}
         </div>
-        <u>[2] Loops</u>
-        <div>
-          ...
+        <div>[2] Loops</div>
+        <div *ngFor="let l of loops">
+          {{l}}
         </div>
-        <u>[3] Non-Touching Loops</u>
-        <div>
-          ...
+        <div>[3] Non-Touching Loops</div>
+        <div *ngFor="let lev of non_t_loops">
+          {{lev}}
+          <div *ngFor="let loop of lev">
+            {{loop}}
+          </div>
         </div>
-        <u>[4] Big Delta</u>
+        <div>[4] Big Delta</div>
         <div>
-          ...
+          {{big_delta}}
+        </div >
+        <div>[5] Individual Deltas</div>
+        <div *ngFor="let delta of deltas">
+          {{delta}}
         </div>
-        <u>[5] Individual Deltas</u>
+        <div>[6] Total gain</div>
         <div>
-          ...
+          {{total_gain}}
         </div>
-        <u>[6] Total gain</u>
-        <div>
-          ...
-        </div>
-    
       </div>
     </div>
   </div>

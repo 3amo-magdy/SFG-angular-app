@@ -467,7 +467,7 @@ export class AppComponent {
   selectStart(){
     if(this.MODE==mode.selectingNode&&this.lastSelectednode!=this.endNode){
       if(this.lastSelectednode.In.length>0){
-        window.alert("the selected node can't take the first node role");
+        window.alert("the selected node can't be the input node");
         return;
       }
       this.startNode=this.lastSelectednode;
@@ -476,7 +476,7 @@ export class AppComponent {
   selectEnd(){
     if(this.MODE==mode.selectingNode&&this.lastSelectednode!=this.startNode){
       if(this.lastSelectednode.Out.length>0){
-        window.alert("the selected node can't take the input node role");
+        window.alert("the selected node can't be the output node");
         return;
       }
       this.endNode=this.lastSelectednode;
@@ -499,6 +499,13 @@ export class AppComponent {
     }
     return true;
   }
+  out:string="&nbsp";
+  forward_paths:string[]=[];
+  loops:string[]=[];
+  non_t_loops:string[][]=[];
+  big_delta="";
+  deltas:string[]=[];
+  total_gain="";
   solve(){
     if(!this.canSolve()){
         console.log("7ot diagram 3dl yasta");
@@ -508,6 +515,13 @@ export class AppComponent {
       x.getPaths(this.nodes,this.startNode,this.endNode)
       var allPaths:pathInfo[]=x.getPathsList()
       var allLoops:pathInfo[]=x.getLoopsList()
+      const loops_map=new Map<pathInfo,string>();  
+
+      for (let index = 0; index < allLoops.length; index++) {
+        loops_map.set(allLoops[index],`L${index}`);
+        this.loops.push(`L${index} : ${allLoops[index].tostr()}`);
+      }
+      this.forward_paths=allPaths.map((path)=>path.tostr());
       
       console.log("all loops & all paths:")
       for(let i=0;i<allPaths.length;i++) allPaths[i].print();
@@ -515,26 +529,37 @@ export class AppComponent {
 
       var c :nonTouchingChecker = new nonTouchingChecker();
       var nonTouchingLoops:pathInfo[][][]= c.findNonTouchingLoops(this.nodes,allLoops);
-      
+      for (let index = 0; index < nonTouchingLoops.length; index++) {
+        const level = nonTouchingLoops[index];//a -> n -> a+2
+        this.non_t_loops.push([]);
+        for (let j = 0; j < level.length; j++) {
+          for (let l = 0; l < level[j].length; l++) {
+            this.non_t_loops[index].push(loops_map.get(level[j][l])!);          
+          }
+        }
+      }
       var bigDelta=1;
       console.log("getting big delta")
-
+      this.big_delta="Delta = 1"
       for(let i=0;i<allLoops.length;i++){
         bigDelta-=allLoops[i].gain
+        this.big_delta+=(allLoops[i].gain>=0)?`- ${allLoops[i].gain}`:`+ ${-allLoops[i].gain}`;
       }
 
       for(let i=0;i<nonTouchingLoops.length;i++){
         for(let j=0;j<nonTouchingLoops[i].length;j++){
-
           var temp=1;
           for(var l of nonTouchingLoops[i][j]){
             l.print()
             temp*=l.gain
           }
           bigDelta=(i%2===0? (bigDelta+temp):(bigDelta-temp))
+          this.big_delta+=(i%2===0? ((temp>=0)?`+ ${temp}`:`- ${-temp}`):((temp>=0)?`- ${temp}`:`+ ${-temp}`))
           console.log(bigDelta)
         }
       }
+      this.big_delta+=allLoops.length>0?" = "+bigDelta:"";
+
       console.log("denumerator is " + bigDelta)
   
       // //print non touching
@@ -557,16 +582,19 @@ export class AppComponent {
     
       
       var numerator=0;
+      this.deltas=[];
       for(let i=0;i<allPaths.length;i++){
         var loopsAfterRemovingPath=x.getLoopsWithoutPath(allLoops,allPaths[i]) //now we have the loops excluding that path
         var c= new nonTouchingChecker()
         var nonTouchingLoopsAfterRemovingPath=c.findNonTouchingLoops(this.nodes,loopsAfterRemovingPath)
         var smallDelta=1;
+        this.deltas[i]=allPaths[i].tostr()+" -> 1";
         console.log("considering path delta ")
         allPaths[i].print()
         console.log("considered loops")
         for(let i=0;i<loopsAfterRemovingPath.length;i++){
             smallDelta-=loopsAfterRemovingPath[i].gain
+            this.deltas[i]+=(loopsAfterRemovingPath[i].gain>=0)?`- ${loopsAfterRemovingPath[i].gain}`:`+ ${-loopsAfterRemovingPath[i].gain}`;
         }
         console.log("small delta before: "+smallDelta)
         for(let i=0;i<nonTouchingLoopsAfterRemovingPath.length;i++){
@@ -577,11 +605,12 @@ export class AppComponent {
               temp2*=l.gain
             }
             smallDelta=(i%2===0?smallDelta+temp2:smallDelta-temp2)
+            this.deltas[i]+=(i%2===0? ((temp2>=0)?`+ ${temp2}`:`- ${-temp2}`):((temp2>=0)?`- ${temp2}`:`+ ${-temp2}`))
             console.log(smallDelta)
           }
         }
         console.log("small delta after: "+smallDelta)
-
+        this.deltas[i]+=loopsAfterRemovingPath.length>0?" = "+smallDelta:"";
         console.log("adding "+allPaths[i].gain*smallDelta+" to the numerator")
         numerator+=allPaths[i].gain*smallDelta;
         smallDelta=1    
@@ -591,8 +620,7 @@ export class AppComponent {
       console.log(numerator+" "+bigDelta)
       var overall= numerator/bigDelta
       console.log("SOLUTION >> OVERALL GAIN = " + overall)
-
-      this.result="solved !";
+      this.total_gain=`${overall}`;
     }
   }
   

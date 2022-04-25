@@ -171,9 +171,8 @@ export class Solver implements ISolver{
 
         return modifiedLoops;
     }
-
-
 }
+
 
 export class pathInfo {
     path: string[];
@@ -186,5 +185,8 @@ export class pathInfo {
 
     print(){
         console.log(this.path + " gain: " + this.gain);
+    }
+    tostr(){
+        return(`${this.path.toString()} : ${this.gain}`);
     }
 }
