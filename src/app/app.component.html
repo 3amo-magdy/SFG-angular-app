@@ -126,8 +126,8 @@
       <div #res id="res">
         <div class="wrapper">
         <div class="h">Forward Paths:</div>
-        <div class="i" *ngFor="let path of forward_paths">
-          {{path}}
+        <div class="i" *ngFor="let path of forward_paths;let i = index">
+          [{{i+1}}]&nbsp;{{path}}
         </div>
         </div>
         <div class="wrapper">
@@ -152,7 +152,7 @@
         <div class="wrapper">
         <div class="h">Individual Deltas:</div>
         <div class="i" *ngFor="let delta of deltas; let i = index">
-          &Delta;<sub>{{i}}</sub>&nbsp;:&nbsp;{{delta}}
+          &Delta;<sub>{{i+1}}</sub>|{{delta}}
         </div>
         </div>
         <div class="wrapper">

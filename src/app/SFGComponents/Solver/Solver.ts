@@ -187,6 +187,9 @@ export class pathInfo {
         console.log(this.path + " gain: " + this.gain);
     }
     tostr(){
-        return(`${this.path.toString()} : ${this.gain}`);
+        return(`${this.path.join(", ")} : ${this.gain}`);
+    }
+    static tostr(path:string[]){
+        return path.join(", ");
     }
 }

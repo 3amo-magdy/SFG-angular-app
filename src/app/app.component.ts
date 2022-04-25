@@ -466,40 +466,24 @@ export class AppComponent {
   }
   selectStart(){
     if(this.MODE==mode.selectingNode&&this.lastSelectednode!=this.endNode){
-      if(this.lastSelectednode.In.length>0){
-        window.alert("the selected node can't be the input node");
-        return;
-      }
       this.startNode=this.lastSelectednode;
     }
   }
   selectEnd(){
     if(this.MODE==mode.selectingNode&&this.lastSelectednode!=this.startNode){
-      if(this.lastSelectednode.Out.length>0){
-        window.alert("the selected node can't be the output node");
-        return;
-      }
       this.endNode=this.lastSelectednode;
     }
   }
   canSolve(){
     if(this.startNode==undefined||this.endNode==undefined){
-      window.alert("please make sure to pick both the input and output nodes");
       return false;
     }
-    for (let index = 0; index < this.nodes.length; index++) {
-      if(this.nodes[index].In.length==0&&this.startNode!=this.nodes[index]&&this.nodes[index].Out.length!=0){
-        window.alert("there can't be more than one node acting as input \n(such systems aren't supported yet)");
-        return false;
-      } 
-    }
-    if(!(this.startNode.In.length==0&&this.endNode.Out.length==0)){
-      window.alert("please make sure to pick applicable input & output nodes");
-      return false;
-    }
+    // if(!(this.startNode.In.length==0&&this.endNode.Out.length==0)){
+    //   window.alert("please make sure to pick applicable input & output nodes");
+    //   return false;
+    // }
     return true;
   }
-  out:string="&nbsp";
   forward_paths:string[]=[];
   loops:string[]=[];
   non_t_loops:string[][]=[];
@@ -508,9 +492,22 @@ export class AppComponent {
   total_gain="";
   solve(){
     if(!this.canSolve()){
-        console.log("7ot diagram 3dl yasta");
+        if(this.nodes.length>1){
+          this.startNode=this.nodes[0];
+          this.endNode=this.nodes[this.nodes.length-1];
+        }
+        else{
+          window.alert("ADD MORE NODES");
+        }
     }
     else{
+      this.abbreviate();
+      this.forward_paths=[];
+      this.loops=[];
+      this.non_t_loops=[];
+      this.big_delta="";
+      this.deltas=[];
+      this.total_gain="";
       let x : Solver = new Solver();
       x.getPaths(this.nodes,this.startNode,this.endNode)
       var allPaths:pathInfo[]=x.getPathsList()
@@ -540,7 +537,7 @@ export class AppComponent {
       }
       var bigDelta=1;
       console.log("getting big delta")
-      this.big_delta="Delta = 1"
+      this.big_delta="1"
       for(let i=0;i<allLoops.length;i++){
         bigDelta-=allLoops[i].gain
         this.big_delta+=(allLoops[i].gain>=0)?`- ${allLoops[i].gain}`:`+ ${-allLoops[i].gain}`;
@@ -588,7 +585,7 @@ export class AppComponent {
         var c= new nonTouchingChecker()
         var nonTouchingLoopsAfterRemovingPath=c.findNonTouchingLoops(this.nodes,loopsAfterRemovingPath)
         var smallDelta=1;
-        this.deltas[i]=allPaths[i].tostr()+" -> 1";
+        this.deltas[i]=pathInfo.tostr(allPaths[i].path)+" = 1";
         console.log("considering path delta ")
         allPaths[i].print()
         console.log("considered loops")
@@ -623,5 +620,23 @@ export class AppComponent {
       this.total_gain=`${overall}`;
     }
   }
-  
+  private  abbreviate(){
+    for (let index = 0; index < this.nodes.length; index++) {
+      const node = this.nodes[index];
+      var node_links:Map<node,link> = new Map();
+      for (let j = 0; j < node.OutLinks.length; j++) {
+        const link = node.OutLinks[j];
+        var old = node_links.get(link.to);
+        if(old!=undefined){
+          old.gain+=link.gain;
+          //remove link
+          this.disconnectBothnodes(link);
+          this.removefromarr(this.links, link);
+        }
+        else{
+          node_links.set(link.to,link);
+        }
+      }
+    }
+  }
 }
