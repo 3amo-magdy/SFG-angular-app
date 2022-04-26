@@ -464,6 +464,17 @@ export class AppComponent {
   resH(){
     (this.Eres.nativeElement as HTMLDivElement).style.height=`${this.win.innerHeight -(this.getOffset().top+this.evaluateCanvasHeight())}`;
   }
+  mousemove(e:MouseEvent){
+    console.log(e.clientX,(this.Eco.nativeElement as HTMLDivElement).clientLeft+(this.Eco.nativeElement as HTMLDivElement).offsetLeft);
+
+    if(e.clientX-(this.Eco.nativeElement as HTMLDivElement).clientLeft<220){
+      (this.Eco.nativeElement as HTMLDivElement).scrollBy(-10,0);
+    }
+    else if(-e.clientX+(this.Eco.nativeElement as HTMLDivElement).clientWidth+(this.Eco.nativeElement as HTMLDivElement).offsetLeft<10){
+      (this.Eco.nativeElement as HTMLDivElement).scrollBy(10,0);
+
+    }
+  }
   selectStart(){
     if(this.MODE==mode.selectingNode&&this.lastSelectednode!=this.endNode){
       this.startNode=this.lastSelectednode;
@@ -528,9 +539,11 @@ export class AppComponent {
     var nonTouchingLoops:pathInfo[][][]= c.findNonTouchingLoops(this.nodes,allLoops);
     for (let index = 0; index < nonTouchingLoops.length; index++) {
       const level = nonTouchingLoops[index];//a -> n -> a+2
-      this.non_t_loops.push([]);
       for (let j = 0; j < level.length; j++) {
         for (let l = 0; l < level[j].length; l++) {
+          if(j==0&&l==0){
+            this.non_t_loops.push([]);
+          }
           this.non_t_loops[index].push(loops_map.get(level[j][l])!);          
         }
       }
