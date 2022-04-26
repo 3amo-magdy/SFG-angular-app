@@ -563,7 +563,7 @@ export class AppComponent {
     this.big_delta="1 "
     for(let i=0;i<allLoops.length;i++){
       bigDelta-=allLoops[i].gain
-      this.big_delta+=(allLoops[i].gain>=0)?`- ${allLoops[i].gain}`:`+ ${-allLoops[i].gain}`;
+      this.big_delta+=(allLoops[i].gain>=0)?` - ${allLoops[i].gain}`:` + ${-allLoops[i].gain}`;
     }
 
     for(let i=0;i<nonTouchingLoops.length;i++){
@@ -574,7 +574,7 @@ export class AppComponent {
           temp*=l.gain
         }
         bigDelta=(i%2===0? (bigDelta+temp):(bigDelta-temp))
-        this.big_delta+=(i%2===0? ((temp>=0)?`+ ${temp}`:`- ${-temp}`):((temp>=0)?`- ${temp}`:`+ ${-temp}`))
+        this.big_delta+=(i%2===0? ((temp>=0)?` + ${temp}`:` - ${-temp}`):((temp>=0)?` - ${temp}`:` + ${-temp}`))
         console.log(bigDelta)
       }
     }
@@ -613,21 +613,33 @@ export class AppComponent {
       allPaths[i].print()
       console.log("considered loops")
       for(let j=0;j<loopsAfterRemovingPath.length;j++){
+          if(j==0){
+            this.deltas[i]+="+ (";
+          }
           smallDelta-=loopsAfterRemovingPath[j].gain
-          this.deltas[i]+=(loopsAfterRemovingPath[j].gain>=0)?`- ${loopsAfterRemovingPath[j].gain}`:`+ ${-loopsAfterRemovingPath[j].gain}`;
+          this.deltas[i]+=(loopsAfterRemovingPath[j].gain>=0)?` - ${loopsAfterRemovingPath[j].gain}`:` + ${-loopsAfterRemovingPath[j].gain}`;
+          if(j==loopsAfterRemovingPath.length-1){
+            this.deltas[i]+=")";
+          }
       }
       console.log("small delta before: "+smallDelta)
       let index=i;
       for(let i=0;i<nonTouchingLoopsAfterRemovingPath.length;i++){
         for(let j=0;j<nonTouchingLoopsAfterRemovingPath[i].length;j++){
+          if(j==0){
+            this.deltas[index]+="+ ("
+          }
           var temp2=1;
           for(var l of nonTouchingLoopsAfterRemovingPath[i][j]){
             l.print()
             temp2*=l.gain
           }
           smallDelta=(i%2===0?smallDelta+temp2:smallDelta-temp2)
-          this.deltas[index]+=(i%2===0? ((temp2>=0)?`+ ${temp2}`:`- ${-temp2}`):((temp2>=0)?`- ${temp2}`:`+ ${-temp2}`))
+          this.deltas[index]+=(i%2===0? ((temp2>=0)?` + ${temp2}`:` - ${-temp2}`):((temp2>=0)?` - ${temp2}`:` + ${-temp2}`))
           console.log(smallDelta)
+          if(j==nonTouchingLoopsAfterRemovingPath[i].length-1){
+            this.deltas[index]+=")"
+          }
         }
       }
       console.log("small delta after: "+smallDelta)
