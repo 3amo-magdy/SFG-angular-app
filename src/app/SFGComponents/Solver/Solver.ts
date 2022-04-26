@@ -35,11 +35,12 @@ export class Solver implements ISolver{
         let u = nodeMap.get(src.name);
         let v = nodeMap.get(dest.name);
         this.DFS(nodes, u!, v!);
-
+        
         for(let i=0 ; i<this.loops.length;i++){
-            for(let j=0 ; j<this.loops.length;j++){
-                if(i!=j && JSON.stringify(this.loops[i].path)==JSON.stringify(this.loops[j].path)){
-                    this.loops.splice(i,1)
+            for(let j=i+1 ; j<this.loops.length;j++){
+                if(JSON.stringify(this.loops[i].path)==JSON.stringify(this.loops[j].path)){
+                    this.loops.splice(j,1)
+                    j--;
                 }
             }
         }

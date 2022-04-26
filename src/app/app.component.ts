@@ -17,8 +17,8 @@ export const NULL:node = new node("",0,0,"");
 export class AppComponent {
   nodes!: node[];
   links!: link[];
-  startNode!:node;
-  endNode!:node;
+  startNode:node|undefined;
+  endNode:node|undefined;
   MODE!: mode;
   selected!: IViewable;
   lastSelectednode!: node;
@@ -113,6 +113,8 @@ export class AppComponent {
     this.axis_pointer = 0;
     this.node_name=0;
     this.holding = false;
+    this.startNode=undefined;
+    this.endNode=undefined;
   }
   getOffset() {
     if (this.canvas) {
@@ -520,14 +522,14 @@ export class AppComponent {
     this.deltas=[];
     this.total_gain="";
     let x : Solver = new Solver();
-    x.getPaths(this.nodes,this.startNode,this.endNode)
+    x.getPaths(this.nodes,this.startNode!,this.endNode!)
     var allPaths:pathInfo[]=x.getPathsList()
     var allLoops:pathInfo[]=x.getLoopsList()
     const loops_map=new Map<pathInfo,string>();  
 
     for (let index = 0; index < allLoops.length; index++) {
-      loops_map.set(allLoops[index],`L${index}`);
-      this.loops.push(`L${index} : ${allLoops[index].tostr()}`);
+      loops_map.set(allLoops[index],`L${index+1}`);
+      this.loops.push(`L${index+1} : ${allLoops[index].tostr()}`);
     }
     this.forward_paths=allPaths.map((path)=>path.tostr());
     
@@ -544,13 +546,21 @@ export class AppComponent {
           if(j==0&&l==0){
             this.non_t_loops.push([]);
           }
-          this.non_t_loops[index].push(loops_map.get(level[j][l])!);          
+          if(l==0){
+            this.non_t_loops[index].push("["+loops_map.get(level[j][l])!);          
+          }
+          else if(l==level[j].length-1){
+            this.non_t_loops[index].push(","+loops_map.get(level[j][l])!+"]");          
+          }
+          else{
+            this.non_t_loops[index].push(","+loops_map.get(level[j][l])!);          
+          }
         }
       }
     }
     var bigDelta=1;
     console.log("getting big delta")
-    this.big_delta="1"
+    this.big_delta="1 "
     for(let i=0;i<allLoops.length;i++){
       bigDelta-=allLoops[i].gain
       this.big_delta+=(allLoops[i].gain>=0)?`- ${allLoops[i].gain}`:`+ ${-allLoops[i].gain}`;
@@ -598,15 +608,16 @@ export class AppComponent {
       var c= new nonTouchingChecker()
       var nonTouchingLoopsAfterRemovingPath=c.findNonTouchingLoops(this.nodes,loopsAfterRemovingPath)
       var smallDelta=1;
-      this.deltas[i]=pathInfo.tostr(allPaths[i].path)+" = 1";
+      this.deltas[i]=pathInfo.tostr(allPaths[i].path)+" = 1 ";
       console.log("considering path delta ")
       allPaths[i].print()
       console.log("considered loops")
-      for(let i=0;i<loopsAfterRemovingPath.length;i++){
-          smallDelta-=loopsAfterRemovingPath[i].gain
-          this.deltas[i]+=(loopsAfterRemovingPath[i].gain>=0)?`- ${loopsAfterRemovingPath[i].gain}`:`+ ${-loopsAfterRemovingPath[i].gain}`;
+      for(let j=0;j<loopsAfterRemovingPath.length;j++){
+          smallDelta-=loopsAfterRemovingPath[j].gain
+          this.deltas[i]+=(loopsAfterRemovingPath[j].gain>=0)?`- ${loopsAfterRemovingPath[j].gain}`:`+ ${-loopsAfterRemovingPath[j].gain}`;
       }
       console.log("small delta before: "+smallDelta)
+      let index=i;
       for(let i=0;i<nonTouchingLoopsAfterRemovingPath.length;i++){
         for(let j=0;j<nonTouchingLoopsAfterRemovingPath[i].length;j++){
           var temp2=1;
@@ -615,7 +626,7 @@ export class AppComponent {
             temp2*=l.gain
           }
           smallDelta=(i%2===0?smallDelta+temp2:smallDelta-temp2)
-          this.deltas[i]+=(i%2===0? ((temp2>=0)?`+ ${temp2}`:`- ${-temp2}`):((temp2>=0)?`- ${temp2}`:`+ ${-temp2}`))
+          this.deltas[index]+=(i%2===0? ((temp2>=0)?`+ ${temp2}`:`- ${-temp2}`):((temp2>=0)?`- ${temp2}`:`+ ${-temp2}`))
           console.log(smallDelta)
         }
       }
