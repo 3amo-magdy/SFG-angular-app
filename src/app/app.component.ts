@@ -498,127 +498,126 @@ export class AppComponent {
         }
         else{
           window.alert("ADD MORE NODES");
+          return;
         }
     }
-    else{
-      this.abbreviate();
-      this.forward_paths=[];
-      this.loops=[];
-      this.non_t_loops=[];
-      this.big_delta="";
-      this.deltas=[];
-      this.total_gain="";
-      let x : Solver = new Solver();
-      x.getPaths(this.nodes,this.startNode,this.endNode)
-      var allPaths:pathInfo[]=x.getPathsList()
-      var allLoops:pathInfo[]=x.getLoopsList()
-      const loops_map=new Map<pathInfo,string>();  
+    this.abbreviate();
+    this.forward_paths=[];
+    this.loops=[];
+    this.non_t_loops=[];
+    this.big_delta="";
+    this.deltas=[];
+    this.total_gain="";
+    let x : Solver = new Solver();
+    x.getPaths(this.nodes,this.startNode,this.endNode)
+    var allPaths:pathInfo[]=x.getPathsList()
+    var allLoops:pathInfo[]=x.getLoopsList()
+    const loops_map=new Map<pathInfo,string>();  
 
-      for (let index = 0; index < allLoops.length; index++) {
-        loops_map.set(allLoops[index],`L${index}`);
-        this.loops.push(`L${index} : ${allLoops[index].tostr()}`);
-      }
-      this.forward_paths=allPaths.map((path)=>path.tostr());
-      
-      console.log("all loops & all paths:")
-      for(let i=0;i<allPaths.length;i++) allPaths[i].print();
-      for(let i=0;i<allLoops.length;i++) allLoops[i].print(); 
+    for (let index = 0; index < allLoops.length; index++) {
+      loops_map.set(allLoops[index],`L${index}`);
+      this.loops.push(`L${index} : ${allLoops[index].tostr()}`);
+    }
+    this.forward_paths=allPaths.map((path)=>path.tostr());
+    
+    console.log("all loops & all paths:")
+    for(let i=0;i<allPaths.length;i++) allPaths[i].print();
+    for(let i=0;i<allLoops.length;i++) allLoops[i].print(); 
 
-      var c :nonTouchingChecker = new nonTouchingChecker();
-      var nonTouchingLoops:pathInfo[][][]= c.findNonTouchingLoops(this.nodes,allLoops);
-      for (let index = 0; index < nonTouchingLoops.length; index++) {
-        const level = nonTouchingLoops[index];//a -> n -> a+2
-        this.non_t_loops.push([]);
-        for (let j = 0; j < level.length; j++) {
-          for (let l = 0; l < level[j].length; l++) {
-            this.non_t_loops[index].push(loops_map.get(level[j][l])!);          
-          }
+    var c :nonTouchingChecker = new nonTouchingChecker();
+    var nonTouchingLoops:pathInfo[][][]= c.findNonTouchingLoops(this.nodes,allLoops);
+    for (let index = 0; index < nonTouchingLoops.length; index++) {
+      const level = nonTouchingLoops[index];//a -> n -> a+2
+      this.non_t_loops.push([]);
+      for (let j = 0; j < level.length; j++) {
+        for (let l = 0; l < level[j].length; l++) {
+          this.non_t_loops[index].push(loops_map.get(level[j][l])!);          
         }
       }
-      var bigDelta=1;
-      console.log("getting big delta")
-      this.big_delta="1"
-      for(let i=0;i<allLoops.length;i++){
-        bigDelta-=allLoops[i].gain
-        this.big_delta+=(allLoops[i].gain>=0)?`- ${allLoops[i].gain}`:`+ ${-allLoops[i].gain}`;
-      }
+    }
+    var bigDelta=1;
+    console.log("getting big delta")
+    this.big_delta="1"
+    for(let i=0;i<allLoops.length;i++){
+      bigDelta-=allLoops[i].gain
+      this.big_delta+=(allLoops[i].gain>=0)?`- ${allLoops[i].gain}`:`+ ${-allLoops[i].gain}`;
+    }
 
-      for(let i=0;i<nonTouchingLoops.length;i++){
-        for(let j=0;j<nonTouchingLoops[i].length;j++){
-          var temp=1;
-          for(var l of nonTouchingLoops[i][j]){
-            l.print()
-            temp*=l.gain
-          }
-          bigDelta=(i%2===0? (bigDelta+temp):(bigDelta-temp))
-          this.big_delta+=(i%2===0? ((temp>=0)?`+ ${temp}`:`- ${-temp}`):((temp>=0)?`- ${temp}`:`+ ${-temp}`))
-          console.log(bigDelta)
+    for(let i=0;i<nonTouchingLoops.length;i++){
+      for(let j=0;j<nonTouchingLoops[i].length;j++){
+        var temp=1;
+        for(var l of nonTouchingLoops[i][j]){
+          l.print()
+          temp*=l.gain
         }
+        bigDelta=(i%2===0? (bigDelta+temp):(bigDelta-temp))
+        this.big_delta+=(i%2===0? ((temp>=0)?`+ ${temp}`:`- ${-temp}`):((temp>=0)?`- ${temp}`:`+ ${-temp}`))
+        console.log(bigDelta)
       }
-      this.big_delta+=allLoops.length>0?" = "+bigDelta:"";
+    }
+    this.big_delta+=allLoops.length>0?" = "+bigDelta:"";
 
-      console.log("denumerator is " + bigDelta)
-  
-      // //print non touching
-      // console.log("nonTouching >>>>>>>")
-      // for(let i=0;i<nonTouchingLoops.length;i++){
-      //     console.log("non touching " +(i+2)+ "loops are: " )
-      //     for(var y of nonTouchingLoops[i]){
-      //         console.log("groupOfLoopsStart");
-      //         for (var l of y){
-      //             for(var n of l.path){
-      //                 console.log(n)
-      //             }
-      //             console.log("+");
-      //         }
-      //         console.log("groupOfLoopsEnd")
-      //     }
-      // }
-      
+    console.log("denumerator is " + bigDelta)
+
+    // //print non touching
+    // console.log("nonTouching >>>>>>>")
+    // for(let i=0;i<nonTouchingLoops.length;i++){
+    //     console.log("non touching " +(i+2)+ "loops are: " )
+    //     for(var y of nonTouchingLoops[i]){
+    //         console.log("groupOfLoopsStart");
+    //         for (var l of y){
+    //             for(var n of l.path){
+    //                 console.log(n)
+    //             }
+    //             console.log("+");
+    //         }
+    //         console.log("groupOfLoopsEnd")
+    //     }
+    // }
+    
+
   
     
-      
-      var numerator=0;
-      this.deltas=[];
-      for(let i=0;i<allPaths.length;i++){
-        var loopsAfterRemovingPath=x.getLoopsWithoutPath(allLoops,allPaths[i]) //now we have the loops excluding that path
-        var c= new nonTouchingChecker()
-        var nonTouchingLoopsAfterRemovingPath=c.findNonTouchingLoops(this.nodes,loopsAfterRemovingPath)
-        var smallDelta=1;
-        this.deltas[i]=pathInfo.tostr(allPaths[i].path)+" = 1";
-        console.log("considering path delta ")
-        allPaths[i].print()
-        console.log("considered loops")
-        for(let i=0;i<loopsAfterRemovingPath.length;i++){
-            smallDelta-=loopsAfterRemovingPath[i].gain
-            this.deltas[i]+=(loopsAfterRemovingPath[i].gain>=0)?`- ${loopsAfterRemovingPath[i].gain}`:`+ ${-loopsAfterRemovingPath[i].gain}`;
-        }
-        console.log("small delta before: "+smallDelta)
-        for(let i=0;i<nonTouchingLoopsAfterRemovingPath.length;i++){
-          for(let j=0;j<nonTouchingLoopsAfterRemovingPath[i].length;j++){
-            var temp2=1;
-            for(var l of nonTouchingLoopsAfterRemovingPath[i][j]){
-              l.print()
-              temp2*=l.gain
-            }
-            smallDelta=(i%2===0?smallDelta+temp2:smallDelta-temp2)
-            this.deltas[i]+=(i%2===0? ((temp2>=0)?`+ ${temp2}`:`- ${-temp2}`):((temp2>=0)?`- ${temp2}`:`+ ${-temp2}`))
-            console.log(smallDelta)
-          }
-        }
-        console.log("small delta after: "+smallDelta)
-        this.deltas[i]+=loopsAfterRemovingPath.length>0?" = "+smallDelta:"";
-        console.log("adding "+allPaths[i].gain*smallDelta+" to the numerator")
-        numerator+=allPaths[i].gain*smallDelta;
-        smallDelta=1    
+    var numerator=0;
+    this.deltas=[];
+    for(let i=0;i<allPaths.length;i++){
+      var loopsAfterRemovingPath=x.getLoopsWithoutPath(allLoops,allPaths[i]) //now we have the loops excluding that path
+      var c= new nonTouchingChecker()
+      var nonTouchingLoopsAfterRemovingPath=c.findNonTouchingLoops(this.nodes,loopsAfterRemovingPath)
+      var smallDelta=1;
+      this.deltas[i]=pathInfo.tostr(allPaths[i].path)+" = 1";
+      console.log("considering path delta ")
+      allPaths[i].print()
+      console.log("considered loops")
+      for(let i=0;i<loopsAfterRemovingPath.length;i++){
+          smallDelta-=loopsAfterRemovingPath[i].gain
+          this.deltas[i]+=(loopsAfterRemovingPath[i].gain>=0)?`- ${loopsAfterRemovingPath[i].gain}`:`+ ${-loopsAfterRemovingPath[i].gain}`;
       }
-          
-  
-      console.log(numerator+" "+bigDelta)
-      var overall= numerator/bigDelta
-      console.log("SOLUTION >> OVERALL GAIN = " + overall)
-      this.total_gain=`${overall}`;
+      console.log("small delta before: "+smallDelta)
+      for(let i=0;i<nonTouchingLoopsAfterRemovingPath.length;i++){
+        for(let j=0;j<nonTouchingLoopsAfterRemovingPath[i].length;j++){
+          var temp2=1;
+          for(var l of nonTouchingLoopsAfterRemovingPath[i][j]){
+            l.print()
+            temp2*=l.gain
+          }
+          smallDelta=(i%2===0?smallDelta+temp2:smallDelta-temp2)
+          this.deltas[i]+=(i%2===0? ((temp2>=0)?`+ ${temp2}`:`- ${-temp2}`):((temp2>=0)?`- ${temp2}`:`+ ${-temp2}`))
+          console.log(smallDelta)
+        }
+      }
+      console.log("small delta after: "+smallDelta)
+      this.deltas[i]+=loopsAfterRemovingPath.length>0?" = "+smallDelta:"";
+      console.log("adding "+allPaths[i].gain*smallDelta+" to the numerator")
+      numerator+=allPaths[i].gain*smallDelta;
+      smallDelta=1    
     }
+        
+
+    console.log(numerator+" "+bigDelta)
+    var overall= numerator/bigDelta
+    console.log("SOLUTION >> OVERALL GAIN = " + overall)
+    this.total_gain=`${overall}`;
   }
   private  abbreviate(){
     for (let index = 0; index < this.nodes.length; index++) {
@@ -632,6 +631,7 @@ export class AppComponent {
           //remove link
           this.disconnectBothnodes(link);
           this.removefromarr(this.links, link);
+          j--;
         }
         else{
           node_links.set(link.to,link);
