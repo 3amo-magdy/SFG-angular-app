@@ -489,12 +489,20 @@ export class AppComponent {
   }
   canSolve(){
     if(this.startNode==undefined||this.endNode==undefined){
-      return false;
+      if(this.nodes.length>1){
+
+          this.startNode=this.nodes[0];
+
+          this.endNode=this.nodes[this.nodes.length-1];
+
+        }
+        else{window.alert("please add more nodes");return false;}
+
     }
-    // if(!(this.startNode.In.length==0&&this.endNode.Out.length==0)){
-    //   window.alert("please make sure to pick applicable input & output nodes");
-    //   return false;
-    // }
+    if(!(this.startNode.In.length==0&&this.endNode.Out.length==0)){
+       window.alert("please make sure to pick applicable input & output nodes");
+       return false;
+     }
     return true;
   }
   forward_paths:string[]=[];
@@ -505,14 +513,11 @@ export class AppComponent {
   total_gain="";
   solve(){
     if(!this.canSolve()){
-        if(this.nodes.length>1){
-          this.startNode=this.nodes[0];
-          this.endNode=this.nodes[this.nodes.length-1];
-        }
-        else{
-          window.alert("ADD MORE NODES");
+     
+
+  
           return;
-        }
+
     }
     this.abbreviate();
     this.forward_paths=[];
