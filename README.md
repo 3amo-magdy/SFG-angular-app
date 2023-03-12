@@ -1,4 +1,5 @@
-# SimApp
+# SFG-angular-app
+# https://sfg-angular-app.vercel.app/
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.0.1.
 
